@@ -1,21 +1,33 @@
 // Home page
-import Link from 'next/link';
+import NavBar from './../components/NavBar';
+import ButtonLink from './../components/ui/ButtonLink';
+import InputField from '../components/ui/InputField';
+import Dropdown from '../components/ui/Dropdown';
+import Footer from '../components/Footer';
 
-export default function HomePage() {
+export default function Home() {
   return (
-    <main className="min-h-screen flex flex-col items-center justify-center p-6 text-center space-y-6">
-      <h1 className="text-4xl font-bold text-amber-950">🐾 Welcome to Pawfect Day</h1>
-      <p className="text-lg text-slate-600 max-w-md">
-        Premium pet grooming and care for your beloved furry friends.
-      </p>
-      <div className="flex gap-4">
-        <Link href="/services" className="px-4 py-2 border rounded-lg hover:bg-slate-50">
-          Our Services
-        </Link>
-        <Link href="/book" className="px-4 py-2 bg-amber-600 text-white rounded-lg hover:bg-amber-700">
-          Book Appointment
-        </Link>
-      </div>
-    </main>
+    <main>
+        <NavBar />
+        <ButtonLink href="/services" variant="primary" size="large">
+          View Services
+        </ButtonLink>
+        <ButtonLink href="/services" variant="secondary" size="large">
+          View Services
+        </ButtonLink>
+        <form className="max-w-md mx-auto mt-8">
+          <InputField label="Name" placeholder="Enter your name" error="Name is required" required />
+          <InputField label="Email" type="email" required placeholder="Enter your email" />
+          <InputField label="Password" type="password" placeholder="Enter your password" />
+          <ButtonLink href="/services" variant="primary" size="medium">
+            Submit
+          </ButtonLink>
+        </form>
+
+<Dropdown label="Select a service" placeholder="Select a service" options={["Grooming", "Walking", "Training"]} />
+    
+    
+    <Footer />
+  </main>
   );
 }
