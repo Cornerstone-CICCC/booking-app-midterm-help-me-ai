@@ -1,18 +1,25 @@
-import { SERVICES_LIST } from '@/app/lib/definitions';
+// Services page
+import NavBar from "./../../components/NavBar";
+import Footer from "./../../components/Footer";
+import CardService from "./../../components/ui/CardService";
 
-export default function ServicesPage() {
+export default function Services() {
   return (
-    <main className="p-8 max-w-4xl mx-auto space-y-6">
-      <h1 className="text-3xl font-bold text-amber-950">Grooming Services</h1>
-      <div className="grid gap-4 md:grid-cols-2">
-        {SERVICES_LIST.map((service) => (
-          <div key={service.id} className="p-4 border rounded-xl space-y-2">
-            <h2 className="text-xl font-semibold">{service.name}</h2>
-            <p className="text-sm text-slate-600">{service.description}</p>
-            <p className="font-bold text-amber-700">${service.price}</p>
-          </div>
-        ))}
-      </div>
+    <main>
+      <NavBar />
+      <section id="hero-section">
+
+        
+      </section>
+      <section id="service-section">
+        <CardService title="Grooming" description="Professional grooming services for your pets." />
+        <CardService title="Walking" description="Leisurely walks for your dogs." />
+        <CardService title="Training" description="Behavioral training for your pets." />
+      </section>
+
+      <h1>Services Page</h1>
+
+      <Footer />
     </main>
   );
 }
