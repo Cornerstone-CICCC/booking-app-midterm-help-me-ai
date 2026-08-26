@@ -287,8 +287,47 @@ function ReviewStep({ draft, service, editStep }: { draft: Draft; service: Servi
   </>;
 }
 
-function NextStepsNotice() { return <p className="mt-4 rounded-2xl border border-amber/35 bg-amber-light px-6 py-4 text-sm leading-5 text-brown-mid"><b className="text-brown">What happens next?</b> Your booking will be submitted as <b className="text-brown">Pending.</b> Our team will review your request and contact you within 24 hours to confirm the appointment.</p>; }
-function FieldLabel({ children }: { children: React.ReactNode }) { return <p className="mb-2 mt-6 font-semibold">{children}</p>; }
-function ChoiceButton({ children, selected, onClick, stacked = false }: { children: React.ReactNode; selected: boolean; onClick: () => void; stacked?: boolean }) { return <button type="button" onClick={onClick} className={`flex min-h-17 items-center justify-center rounded-xl border-2 px-4 py-3 font-semibold ${stacked ? "flex-col" : "justify-start"} ${selected ? "border-terra bg-terra-faint" : "border-warm-border"}`}>{children}</button>; }
-function ServiceOption({ service, icon, selected, onClick }: { service: Service; icon: string; selected: boolean; onClick: () => void }) { return <button type="button" onClick={onClick} className={`flex w-full items-center gap-4 rounded-xl border-2 px-5 py-4 text-left ${selected ? "border-terra bg-terra-faint" : "border-warm-border"}`}><span className="text-2xl">{icon}</span><span className="flex-1"><b className="block">{service.name}</b><small className="text-brown-mid">{service.includes?.join(", ")}</small></span><span className="text-sm text-brown-mid">~{service.durationMinutes} min　<b className="text-brown">from ${service.price}</b></span></button>; }
-function ReviewBlock({ title, onEdit, values }: { title: string; onEdit: () => void; values: string[][] }) { return <section className="mt-7 border-t border-warm-border pt-6"><div className="flex justify-between"><h2 className="font-semibold uppercase tracking-wide">{title}</h2><button type="button" onClick={onEdit} className="text-sm font-semibold text-terra">Edit</button></div><dl className="mt-4 space-y-2">{values.map(([key, value]) => <div key={key} className="grid grid-cols-[8rem_1fr] text-sm"><dt className="text-brown-mid">{key}</dt><dd className="font-semibold">{value}</dd></div>)}</dl></section>; }
+function NextStepsNotice() {
+  return (
+    <p className="mt-4 rounded-2xl border border-amber/35 bg-amber-light px-6 py-4 text-sm leading-5 text-brown-mid">
+      <b className="text-brown">What happens next?</b> Your booking will be submitted as{" "}
+      <b className="text-brown">Pending.</b> Our team will review your request and contact you within 24 hours to confirm the appointment.
+    </p>
+  );
+}
+
+function FieldLabel({ children }: { children: React.ReactNode }) {
+  return <p className="mb-2 mt-6 font-semibold">{children}</p>;
+}
+
+function ChoiceButton({ children, selected, onClick, stacked = false }: { children: React.ReactNode; selected: boolean; onClick: () => void; stacked?: boolean }) {
+  const alignmentClass = stacked ? "flex-col" : "justify-start";
+  const stateClass = selected ? "border-terra bg-terra-faint" : "border-warm-border";
+
+  return (
+    <button type="button" onClick={onClick} className={`flex min-h-17 items-center justify-center rounded-xl border-2 px-4 py-3 font-semibold ${alignmentClass} ${stateClass}`}>
+      {children}
+    </button>
+  );
+}
+
+function ServiceOption({ service, icon, selected, onClick }: { service: Service; icon: string; selected: boolean; onClick: () => void }) {
+  const stateClass = selected ? "border-terra bg-terra-faint" : "border-warm-border";
+
+  return (
+    <button type="button" onClick={onClick} className={`flex w-full items-center gap-4 rounded-xl border-2 px-5 py-4 text-left ${stateClass}`}>
+      <span className="text-2xl">{icon}</span>
+      <span className="flex-1"><b className="block">{service.name}</b><small className="text-brown-mid">{service.includes?.join(", ")}</small></span>
+      <span className="text-sm text-brown-mid">~{service.durationMinutes} min　<b className="text-brown">from ${service.price}</b></span>
+    </button>
+  );
+}
+
+function ReviewBlock({ title, onEdit, values }: { title: string; onEdit: () => void; values: string[][] }) {
+  return (
+    <section className="mt-7 border-t border-warm-border pt-6">
+      <div className="flex justify-between"><h2 className="font-semibold uppercase tracking-wide">{title}</h2><button type="button" onClick={onEdit} className="text-sm font-semibold text-terra">Edit</button></div>
+      <dl className="mt-4 space-y-2">{values.map(([key, value]) => <div key={key} className="grid grid-cols-[8rem_1fr] text-sm"><dt className="text-brown-mid">{key}</dt><dd className="font-semibold">{value}</dd></div>)}</dl>
+    </section>
+  );
+}
