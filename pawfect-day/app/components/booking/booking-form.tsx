@@ -1,11 +1,16 @@
 "use client";
 
-import { useState } from "react";
+import { useActionState, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 
 import Button from "@/app/components/ui/Button";
 import InputField from "@/app/components/ui/InputField";
+import {
+  createBooking,
+  type BookingFormState,
+} from "@/app/(public)/book/action";
 import { SERVICES_LIST, type Service } from "@/app/lib/definitions";
+import type { PetSize, PetType, ServiceType } from "@/app/types/booking";
 
 import ProgressIndicator from "./progress-indicator";
 
@@ -14,17 +19,23 @@ type Draft = {
   email: string;
   phone: string;
   pet: string;
-  type: string;
+  type: PetType | "";
   breed: string;
-  size: string;
-  service: string;
+  size: PetSize | "";
+  service: ServiceType | "";
   notes: string;
   date: string;
   time: string;
   alternateTime: string;
 };
 
-type UpdateDraft = (key: keyof Draft, value: string) => void;
+type UpdateDraft = <Key extends keyof Draft>(key: Key, value: Draft[Key]) => void;
+
+const PET_SIZES: Array<{ value: PetSize; label: string; description: string }> = [
+  { value: "small", label: "Small", description: "Under 20 lb" },
+  { value: "medium", label: "Medium", description: "20–50 lb" },
+  { value: "large", label: "Large", description: "Over 50 lb" },
+];
 
 const INITIAL_DRAFT: Draft = {
   name: "",
@@ -43,6 +54,8 @@ const INITIAL_DRAFT: Draft = {
 
 const APPOINTMENT_TIMES = ["10:30 AM", "12:00 PM", "1:30 PM", "4:30 PM"];
 
+const INITIAL_BOOKING_STATE: BookingFormState = {};
+
 export default function BookingForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -52,17 +65,21 @@ export default function BookingForm() {
   );
 
   const [step, setStep] = useState(1);
-  const [draft, setDraft] = useState(() => ({
+  const [draft, setDraft] = useState<Draft>(() => ({
     ...INITIAL_DRAFT,
     service: requestedService?.id ?? "",
   }));
   const [error, setError] = useState("");
+  const [submissionState, submitBookingAction, isSubmitting] = useActionState(
+    createBooking,
+    INITIAL_BOOKING_STATE,
+  );
 
   const selectedService = SERVICES_LIST.find(
     (service) => service.id === draft.service,
   );
 
-  function updateDraft(key: keyof Draft, value: string) {
+  function updateDraft<Key extends keyof Draft>(key: Key, value: Draft[Key]) {
     setDraft((previous) => ({ ...previous, [key]: value }));
   }
 
@@ -94,19 +111,6 @@ export default function BookingForm() {
     setStep((currentStep) => currentStep - 1);
   }
 
-  function submitBooking() {
-    const params = new URLSearchParams({
-      pet: draft.pet,
-      service: selectedService?.name ?? "",
-      date: draft.date,
-      time: draft.time,
-      email: draft.email,
-      phone: draft.phone,
-    });
-
-    router.push(`/book/success?${params.toString()}`);
-  }
-
   return (
     <div className="mx-auto max-w-[1210px]">
       <ProgressIndicator currentStep={step} />
@@ -125,6 +129,11 @@ export default function BookingForm() {
             className="mt-6 rounded-xl bg-terra-faint px-4 py-3 text-terra-dark"
           >
             {error}
+          </p>
+        )}
+        {!submissionState.success && submissionState.message && (
+          <p role="alert" className="mt-6 rounded-xl bg-terra-faint px-4 py-3 text-terra-dark">
+            {submissionState.message}
           </p>
         )}
       </section>
@@ -147,9 +156,12 @@ export default function BookingForm() {
         )}
 
         {step === 4 ? (
-          <Button className="min-w-60" onClick={submitBooking}>
-            Request Appointment
-          </Button>
+          <form action={submitBookingAction}>
+            <BookingPayload draft={draft} />
+            <Button className="min-w-60" type="submit" disabled={isSubmitting}>
+              {isSubmitting ? "Sending request…" : "Request Appointment"}
+            </Button>
+          </form>
         ) : (
           <Button className="min-w-48" onClick={continueBooking}>
             Continue&nbsp; ›
@@ -158,6 +170,25 @@ export default function BookingForm() {
       </div>
     </div>
   );
+}
+
+function BookingPayload({ draft }: { draft: Draft }) {
+  const fields: Record<string, string> = {
+    customerName: draft.name,
+    email: draft.email,
+    phone: draft.phone,
+    petName: draft.pet,
+    petType: draft.type,
+    petBreed: draft.breed,
+    petSize: draft.size,
+    service: draft.service,
+    bookingDate: draft.date,
+    bookingTime: draft.time,
+    alternateTime: draft.alternateTime,
+    notes: draft.notes,
+  };
+
+  return <>{Object.entries(fields).map(([name, value]) => <input key={name} type="hidden" name={name} value={value} />)}</>;
 }
 
 function DetailsStep({ draft, updateDraft }: { draft: Draft; updateDraft: UpdateDraft }) {
@@ -197,8 +228,8 @@ function PetAndServiceStep({ draft, updateDraft }: { draft: Draft; updateDraft: 
 
         <FieldLabel>Pet Type *</FieldLabel>
         <div className="grid grid-cols-2 gap-3">
-          <ChoiceButton selected={draft.type === "Dog"} onClick={() => updateDraft("type", "Dog")}>🐶　Dog</ChoiceButton>
-          <ChoiceButton selected={draft.type === "Cat"} onClick={() => updateDraft("type", "Cat")}>🐱　Cat</ChoiceButton>
+          <ChoiceButton selected={draft.type === "dog"} onClick={() => updateDraft("type", "dog")}>🐶　Dog</ChoiceButton>
+          <ChoiceButton selected={draft.type === "cat"} onClick={() => updateDraft("type", "cat")}>🐱　Cat</ChoiceButton>
         </div>
 
         <div className="mt-6">
@@ -207,10 +238,10 @@ function PetAndServiceStep({ draft, updateDraft }: { draft: Draft; updateDraft: 
 
         <FieldLabel>Pet Size *</FieldLabel>
         <div className="grid grid-cols-3 gap-3">
-          {["Small", "Medium", "Large"].map((size, index) => (
-            <ChoiceButton key={size} stacked selected={draft.size === size} onClick={() => updateDraft("size", size)}>
-              <b>{size}</b>
-              <small>{["Under 20 lb", "20–50 lb", "Over 50 lb"][index]}</small>
+          {PET_SIZES.map((size) => (
+            <ChoiceButton key={size.value} stacked selected={draft.size === size.value} onClick={() => updateDraft("size", size.value)}>
+              <b>{size.label}</b>
+              <small>{size.description}</small>
             </ChoiceButton>
           ))}
         </div>
@@ -247,7 +278,7 @@ function DateAndTimeStep({ draft, updateDraft }: { draft: Draft; updateDraft: Up
 
       {draft.date && (
         <div className="mt-7">
-          <h2 className="text-lg font-semibold text-brown">Available times for <span className="text-terra">{draft.date}</span></h2>
+          <h2 className="text-lg font-semibold text-brown">Available times for <span className="text-terra">{formatBookingDate(draft.date)}</span></h2>
           <TimeGroup label="Morning" times={APPOINTMENT_TIMES.slice(0, 2)} selected={draft.time} onSelect={(time) => updateDraft("time", time)} />
           <TimeGroup label="Afternoon" times={APPOINTMENT_TIMES.slice(2)} selected={draft.time} onSelect={(time) => updateDraft("time", time)} />
 
@@ -266,7 +297,7 @@ function Calendar({ days, selectedDate, onSelectDate }: { days: number[]; select
       {Array.from({ length: 5 }, (_, index) => <span key={index} />)}
       {days.map((day) => {
         const unavailable = day < 25 || day === 28 || day === 30;
-        const date = new Date(2026, 7, day).toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" });
+        const date = `2026-08-${String(day).padStart(2, "0")}`;
         const selected = selectedDate === date;
         const today = day === 25;
         const classes = selected ? "bg-terra text-white" : today ? "border border-terra text-terra" : unavailable ? "text-warm-border" : "text-brown";
@@ -292,7 +323,7 @@ function ReviewStep({ draft, service, editStep }: { draft: Draft; service: Servi
     <p className="mt-1 text-brown-mid">Everything look right? Submit your request and we&apos;ll be in touch.</p>
     <ReviewBlock title="Contact Details" onEdit={() => editStep(1)} values={[["Name", draft.name], ["Email", draft.email], ["Phone", draft.phone]]} />
     <ReviewBlock title="Pet Details" onEdit={() => editStep(2)} values={[["Pet Name", draft.pet], ["Type", draft.type.toLowerCase()], ["Breed", draft.breed || "—"], ["Size", draft.size]]} />
-    <ReviewBlock title="Appointment Details" onEdit={() => editStep(3)} values={[["Service", service.name], ["Duration", `~${service.durationMinutes} min`], ["Starting Price", `$${service.price}`], ["Date", draft.date], ["Time", draft.time]]} />
+    <ReviewBlock title="Appointment Details" onEdit={() => editStep(3)} values={[["Service", service.name], ["Duration", `~${service.durationMinutes} min`], ["Starting Price", `$${service.price}`], ["Date", formatBookingDate(draft.date)], ["Time", draft.time]]} />
   </>;
 }
 
@@ -303,6 +334,17 @@ function NextStepsNotice() {
       <b className="text-brown">Pending.</b> Our team will review your request and contact you within 24 hours to confirm the appointment.
     </p>
   );
+}
+
+function formatBookingDate(value: string) {
+  if (!value) return value;
+
+  return new Date(`${value}T00:00:00`).toLocaleDateString("en-US", {
+    weekday: "long",
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+  });
 }
 
 function FieldLabel({ children }: { children: React.ReactNode }) {

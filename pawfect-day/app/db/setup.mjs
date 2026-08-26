@@ -9,9 +9,7 @@ const pool = new Pool({
 	port: 5432,
 	database: process.env.DB_DATABASE,
 	password: process.env.DB_PASS,
-	ssl: {
-		rejectUnauthorized: false,
-	},
+	ssl: process.env.DB_SSL === "true" ? { rejectUnauthorized: false } : undefined,
 });
 
 const migrationFiles = readdirSync("app/db/migrations").sort();

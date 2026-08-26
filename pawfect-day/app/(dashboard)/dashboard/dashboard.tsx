@@ -1,13 +1,99 @@
+import DashboardClient from '@/app/components/dashboard/dashboard-client';
+import type { Booking } from '@/app/types/booking';
+
+const mockBookings: Booking[] = [
+  {
+    id: 'booking-1',
+    referenceNumber: 'PAW-8001',
+    customerName: 'Joy Kosol',
+    email: 'joy@example.com',
+    phone: '555-0101',
+    petName: 'Mochi',
+    petType: 'dog',
+    petBreed: 'Shiba Inu',
+    petSize: 'small',
+    service: 'full_groom',
+    durationMinutes: 90,
+    startingPrice: 75,
+    bookingDate: '2026-08-25',
+    bookingTime: '10:30 AM',
+    status: 'pending',
+    createdAt: '2026-08-20T10:00:00Z',
+  },
+  {
+    id: 'booking-2',
+    referenceNumber: 'PAW-8002',
+    customerName: 'Alex Chen',
+    email: 'alex@example.com',
+    phone: '555-0102',
+    petName: 'Luna',
+    petType: 'dog',
+    petBreed: 'Golden Retriever',
+    petSize: 'large',
+    service: 'bath_and_brush',
+    durationMinutes: 60,
+    startingPrice: 45,
+    bookingDate: '2026-08-25',
+    bookingTime: '12:00 PM',
+    status: 'confirmed',
+    createdAt: '2026-08-20T11:30:00Z',
+  },
+  {
+    id: 'booking-3',
+    referenceNumber: 'PAW-8003',
+    customerName: 'Sam Wilson',
+    email: 'sam@example.com',
+    phone: '555-0103',
+    petName: 'Teddy',
+    petType: 'dog',
+    petBreed: 'Poodle',
+    petSize: 'medium',
+    service: 'deshedding_treatment',
+    durationMinutes: 75,
+    startingPrice: 60,
+    bookingDate: '2026-08-25',
+    bookingTime: '01:30 PM',
+    status: 'confirmed',
+    createdAt: '2026-08-20T14:15:00Z',
+  },
+  {
+    id: 'booking-4',
+    referenceNumber: 'PAW-8004',
+    customerName: 'Mia Lee',
+    email: 'mia@example.com',
+    phone: '555-0104',
+    petName: 'Nori',
+    petType: 'cat',
+    petBreed: 'Persian',
+    petSize: 'medium',
+    service: 'nail_trim',
+    durationMinutes: 20,
+    startingPrice: 20,
+    bookingDate: '2026-08-26',
+    bookingTime: '09:00 AM',
+    status: 'completed',
+    createdAt: '2026-08-20T16:00:00Z',
+  },
+  {
+    id: 'booking-5',
+    referenceNumber: 'PAW-8005',
+    customerName: 'Taylor Brown',
+    email: 'taylor@example.com',
+    phone: '555-0105',
+    petName: 'Charlie',
+    petType: 'dog',
+    petBreed: 'Labrador',
+    petSize: 'large',
+    service: 'puppys_first_groom',
+    durationMinutes: 45,
+    startingPrice: 40,
+    bookingDate: '2026-08-26',
+    bookingTime: '03:00 PM',
+    status: 'cancelled',
+    createdAt: '2026-08-20T17:20:00Z',
+  },
+];
+
 export default function DashboardPage() {
-  return (
-    <main className="p-8 space-y-6">
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-3xl font-bold text-slate-900">Staff Dashboard</h1>
-          <p className="text-slate-500">Manage pet grooming appointments.</p>
-        </div>
-      </div>
-      {/* Table & Filters components will be mounted here */}
-    </main>
-  );
+  return <DashboardClient bookings={mockBookings} />;
 }

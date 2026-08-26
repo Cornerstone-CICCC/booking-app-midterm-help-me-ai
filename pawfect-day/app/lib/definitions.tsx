@@ -1,3 +1,7 @@
+// --- Types ---
+export type PetType = 'dog' | 'cat';
+export type PetSize = 'small' | 'medium' | 'large' | 'giant';
+export type BookingStatus = 'pending' | 'confirmed' | 'completed' | 'cancelled';
 
 import { SERVICES_MASTER, type ServiceInfo } from "@/app/types/booking";
 
