@@ -1,3 +1,76 @@
+// --- Types ---
+export type PetType = 'dog' | 'cat';
+export type PetSize = 'small' | 'medium' | 'large' | 'giant';
+export type BookingStatus = 'pending' | 'confirmed' | 'completed' | 'cancelled';
+
+export interface Service {
+  id: string;
+  name: string;
+  description: string;
+  includes?: string[];
+  price: number;
+  durationMinutes: number;
+}
+
+export interface Booking {
+  id: string;
+  ownerName: string;
+  ownerEmail: string;
+  ownerPhone: string;
+  petName: string;
+  petType: PetType;
+  petSize: PetSize;
+  serviceId: string;
+  bookingDate: string; // YYYY-MM-DD
+  bookingTime: string; // HH:mm
+  status: BookingStatus;
+  notes?: string;
+  createdAt: string;
+}
+
+// --- Mock data for services ---
+export const SERVICES_LIST: Service[] = [
+  {
+    id: 'srv-1',
+    name: 'Bath & Brush',
+    description: 'A thorough clean and coat refresh that leaves your pet smelling wonderful.',
+    includes: ['Bath', 'Blow-dry', 'Brushing', 'Ear cleaning'],
+    price: 45.00,
+    durationMinutes: 60,
+  },
+  {
+    id: 'srv-2',
+    name: 'Full Groom',
+    description: 'Our most complete grooming service — a head-to-tail transformation.',
+    includes: ['Bath', 'Haircut', 'Brushing', 'Nail trim', 'Ear cleaning'],
+    price: 75.00,
+    durationMinutes: 90,
+  },
+  {
+    id: 'srv-3',
+    name: 'Nail Trim',
+    description: 'Quick and stress-free nail maintenance for a comfortable pet.',
+    includes: ['Nail Clipping and filing'],
+    price: 20.00,
+    durationMinutes: 20,
+  },
+  {
+    id: 'srv-4',
+    name: 'De-shedding Treatment',
+    description: 'Dramatically reduces shedding with a deep coat treatment and thorough blow-out.',
+    includes: ['Bath', 'Coat treatment', 'Blow-dry', 'Thorough Brushing'],
+    price: 60.00,
+    durationMinutes: 75,
+  },
+  {
+    id: 'srv-5',
+    name: 'Puppy\'s First Groom',
+    description: 'A gentle, patient introduction to grooming for young dogs — low-stress and fun.',
+    includes: ['Gentle bath', 'Introductory brush', 'Nail check', 'Ear cleaning'],
+    price: 40.00,
+    durationMinutes: 45,
+  },
+];
 
 // --- Form Validations and Struct ---
 
