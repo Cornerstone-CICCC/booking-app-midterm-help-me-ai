@@ -25,7 +25,10 @@ export default function BookingSuccessPage() {
           contact you when the appointment is confirmed.
         </p>
 
-        <BookingSummary details={booking.details} />
+        <BookingSummary
+          details={booking.details}
+          referenceNumber={booking.referenceNumber}
+        />
         <WhatToExpect email={booking.email} />
         <PageActions />
       </div>
@@ -40,6 +43,7 @@ function getBookingDetails(searchParams: ReturnType<typeof useSearchParams>) {
   const time = searchParams.get("time") || "12:00 PM";
   const email = searchParams.get("email") || "your email";
   const phone = searchParams.get("phone") || "your phone";
+  const referenceNumber = searchParams.get("reference") || "PAW-2608-0006";
 
   const details: BookingDetail[] = [
     ["Pet Name", pet],
@@ -50,7 +54,7 @@ function getBookingDetails(searchParams: ReturnType<typeof useSearchParams>) {
     ["Contact Phone", phone],
   ];
 
-  return { pet, email, details };
+  return { pet, email, details, referenceNumber };
 }
 
 function ConfirmationAvatar() {
@@ -73,13 +77,21 @@ function ConfirmationAvatar() {
   );
 }
 
-function BookingSummary({ details }: { details: BookingDetail[] }) {
+function BookingSummary({
+  details,
+  referenceNumber,
+}: {
+  details: BookingDetail[];
+  referenceNumber: string;
+}) {
   return (
     <section className="mt-8 overflow-hidden rounded-2xl border border-warm-border bg-white text-left">
       <header className="flex items-center justify-between bg-terra px-7 py-5 text-cream">
         <div>
           <p className="text-xs font-bold uppercase">Booking reference</p>
-          <h2 className="font-display text-xl font-semibold">PAW-2608-0006</h2>
+          <h2 className="font-display text-xl font-semibold">
+            {referenceNumber}
+          </h2>
         </div>
         <span className="rounded-full bg-white px-3 py-1 text-sm font-bold text-amber">
           ● Pending

@@ -1,12 +1,16 @@
 "use client";
 
-import { useState } from "react";
+import { useActionState, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 
 import Button from "@/app/components/ui/Button";
 import InputField from "@/app/components/ui/InputField";
+import {
+  createBooking,
+} from "@/app/actions/bookings";
 import { SERVICES_LIST, type Service } from "@/app/lib/definitions";
 import type { PetSize, PetType, ServiceType } from "@/app/types/booking";
+import type { CreateBookingState } from "@/app/types/booking-action";
 
 import ProgressIndicator from "./progress-indicator";
 
@@ -50,6 +54,11 @@ const INITIAL_DRAFT: Draft = {
 
 const APPOINTMENT_TIMES = ["10:30 AM", "12:00 PM", "1:30 PM", "4:30 PM"];
 
+const INITIAL_BOOKING_STATE: CreateBookingState = {
+  success: false,
+  message: "",
+};
+
 export default function BookingForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -64,6 +73,10 @@ export default function BookingForm() {
     service: requestedService?.id ?? "",
   }));
   const [error, setError] = useState("");
+  const [submissionState, submitBookingAction, isSubmitting] = useActionState(
+    createBooking,
+    INITIAL_BOOKING_STATE,
+  );
 
   const selectedService = SERVICES_LIST.find(
     (service) => service.id === draft.service,
@@ -101,7 +114,11 @@ export default function BookingForm() {
     setStep((currentStep) => currentStep - 1);
   }
 
-  function submitBooking() {
+  useEffect(() => {
+    if (!submissionState.success) {
+      return;
+    }
+
     const params = new URLSearchParams({
       pet: draft.pet,
       service: selectedService?.name ?? "",
@@ -109,10 +126,11 @@ export default function BookingForm() {
       time: draft.time,
       email: draft.email,
       phone: draft.phone,
+      reference: submissionState.referenceNumber ?? "",
     });
 
     router.push(`/book/success?${params.toString()}`);
-  }
+  }, [draft, router, selectedService?.name, submissionState]);
 
   return (
     <div className="mx-auto max-w-[1210px]">
@@ -132,6 +150,11 @@ export default function BookingForm() {
             className="mt-6 rounded-xl bg-terra-faint px-4 py-3 text-terra-dark"
           >
             {error}
+          </p>
+        )}
+        {!submissionState.success && submissionState.message && (
+          <p role="alert" className="mt-6 rounded-xl bg-terra-faint px-4 py-3 text-terra-dark">
+            {submissionState.message}
           </p>
         )}
       </section>
@@ -154,9 +177,12 @@ export default function BookingForm() {
         )}
 
         {step === 4 ? (
-          <Button className="min-w-60" onClick={submitBooking}>
-            Request Appointment
-          </Button>
+          <form action={submitBookingAction}>
+            <BookingPayload draft={draft} />
+            <Button className="min-w-60" type="submit" disabled={isSubmitting}>
+              {isSubmitting ? "Sending request…" : "Request Appointment"}
+            </Button>
+          </form>
         ) : (
           <Button className="min-w-48" onClick={continueBooking}>
             Continue&nbsp; ›
@@ -165,6 +191,25 @@ export default function BookingForm() {
       </div>
     </div>
   );
+}
+
+function BookingPayload({ draft }: { draft: Draft }) {
+  const fields: Record<string, string> = {
+    ownerName: draft.name,
+    ownerEmail: draft.email,
+    ownerPhone: draft.phone,
+    petName: draft.pet,
+    petType: draft.type,
+    petBreed: draft.breed,
+    petSize: draft.size,
+    service: draft.service,
+    bookingDate: draft.date,
+    bookingTime: draft.time,
+    alternateTime: draft.alternateTime,
+    notes: draft.notes,
+  };
+
+  return <>{Object.entries(fields).map(([name, value]) => <input key={name} type="hidden" name={name} value={value} />)}</>;
 }
 
 function DetailsStep({ draft, updateDraft }: { draft: Draft; updateDraft: UpdateDraft }) {
