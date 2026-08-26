@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 import Button from "@/app/components/ui/Button";
 import InputField from "@/app/components/ui/InputField";
@@ -45,8 +45,17 @@ const APPOINTMENT_TIMES = ["10:30 AM", "12:00 PM", "1:30 PM", "4:30 PM"];
 
 export default function BookingForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const requestedServiceName = searchParams.get("service");
+  const requestedService = SERVICES_LIST.find(
+    (service) => service.name === requestedServiceName,
+  );
+
   const [step, setStep] = useState(1);
-  const [draft, setDraft] = useState(INITIAL_DRAFT);
+  const [draft, setDraft] = useState(() => ({
+    ...INITIAL_DRAFT,
+    service: requestedService?.id ?? "",
+  }));
   const [error, setError] = useState("");
 
   const selectedService = SERVICES_LIST.find(
