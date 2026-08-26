@@ -18,6 +18,8 @@ export interface ServiceInfo {
 	description: string;
 	durationMinutes: number;
 	startingPrice: number;
+	imageUrl?: string;
+	
 }
 
 export const SERVICES_MASTER: Record<ServiceType, ServiceInfo> = {
@@ -27,6 +29,7 @@ export const SERVICES_MASTER: Record<ServiceType, ServiceInfo> = {
 		description: "Bath, blow-dry, brushing, ear cleaning",
 		durationMinutes: 60,
 		startingPrice: 45,
+		imageUrl:"https://images.unsplash.com/photo-1528846104175-4fd300ee59da?w=600&h=300&fit=crop&auto=format"
 	},
 	full_groom: {
 		id: "full_groom",
@@ -34,6 +37,7 @@ export const SERVICES_MASTER: Record<ServiceType, ServiceInfo> = {
 		description: "Bath, haircut, brushing, nail trim, ear cleaning",
 		durationMinutes: 90,
 		startingPrice: 75,
+		imageUrl:"https://images.unsplash.com/photo-1719464454959-9cf304ef4774?w=600&h=300&fit=crop&auto=format"
 	},
 	nail_trim: {
 		id: "nail_trim",
@@ -41,6 +45,7 @@ export const SERVICES_MASTER: Record<ServiceType, ServiceInfo> = {
 		description: "Nail clipping and filing",
 		durationMinutes: 20,
 		startingPrice: 20,
+		imageUrl:"https://images.unsplash.com/photo-1651273427958-bf78352e39be?w=600&h=300&fit=crop&auto=format"
 	},
 	deshedding_treatment: {
 		id: "deshedding_treatment",
@@ -48,6 +53,7 @@ export const SERVICES_MASTER: Record<ServiceType, ServiceInfo> = {
 		description: "Bath, coat treatment, blow-dry, and thorough brushing",
 		durationMinutes: 75,
 		startingPrice: 60,
+		imageUrl: "https://images.unsplash.com/photo-1588269845483-8e7f2398cca6?w=600&h=300&fit=crop&auto=format"
 	},
 	puppys_first_groom: {
 		id: "puppys_first_groom",
@@ -55,6 +61,7 @@ export const SERVICES_MASTER: Record<ServiceType, ServiceInfo> = {
 		description: "Gentle introduction to grooming for young dogs",
 		durationMinutes: 45,
 		startingPrice: 40,
+		imageUrl: "https://images.unsplash.com/photo-1678153184494-1f6fc14a673d?w=600&h=300&fit=crop&auto=format"
 	},
 };
 

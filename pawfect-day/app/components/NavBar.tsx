@@ -76,7 +76,7 @@ export default function NavBar() {
             font-display
             text-xl
             font-semibold
-            text-brown
+            text-terra
           "
         >
           <span aria-hidden="true">🐾</span>
