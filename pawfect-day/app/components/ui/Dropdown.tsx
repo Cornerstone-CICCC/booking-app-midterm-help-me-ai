@@ -1,4 +1,6 @@
-interface DropdownProps {
+import type { SelectHTMLAttributes } from "react";
+
+interface DropdownProps extends SelectHTMLAttributes<HTMLSelectElement> {
   label: string;
   options: string[];
   placeholder?: string;
@@ -8,17 +10,21 @@ export default function Dropdown({
   label,
   options,
   placeholder = "Select an option",
+  id,
+  className = "",
+  ...selectProps
 }: DropdownProps) {
+  const selectId = id ?? selectProps.name;
   return (
     <div className="mb-4">
-      <label className="mb-1 block text-base
+      <label htmlFor={selectId} className="mb-1 block text-base
        font-semibold text-brown">
         {label}
       </label>
 
       <select
-        defaultValue=""
-        className="
+        id={selectId}
+        className={`
           w-full
           rounded-md
           border
@@ -33,7 +39,10 @@ export default function Dropdown({
           focus-visible:ring-2
           focus-visible:ring-terra-light
           focus-visible:ring-offset-0
-        "
+          ${className}
+        `}
+        required={selectProps.required}
+        {...selectProps}
       >
         <option value="" disabled>
           {placeholder}

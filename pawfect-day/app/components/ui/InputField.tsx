@@ -1,9 +1,9 @@
 
 
-interface InputFieldProps {
+import type { InputHTMLAttributes } from "react";
+
+interface InputFieldProps extends InputHTMLAttributes<HTMLInputElement> {
   label: string;
-  placeholder?: string;
-  type?: string;
   required?: boolean;
   error?: string;
 }
@@ -13,19 +13,25 @@ export default function InputField({
   type = "text",
   placeholder = "",
   error = "",
-
   required = false,
+  id,
+  className = "",
+  ...inputProps
 }: InputFieldProps) {
+  const inputId = id ?? inputProps.name;
+
   return (
     <div className="mb-4">
-      <label 
-      className="block text-md font-semibold text-brown mb-1">
+      <label htmlFor={inputId} className="block text-md font-semibold text-brown mb-1">
         {label} 
         {required && <span className="text-red-500">*</span>}
       </label>
       <input
+        id={inputId}
         type={type}
         placeholder={placeholder}
+        required={required}
+        aria-invalid={Boolean(error)}
         className={
             `w-full rounded-md border border-warm-border bg-white
              px-3 py-2 text-md text-brown 
@@ -34,7 +40,8 @@ export default function InputField({
 
              ${
           error ? "border-red-500" : ""
-        }`}
+        } ${className}`}
+        {...inputProps}
       />
       {error && <p className="mt-1 text-xs text-red-500">{error}</p>}
     </div>
