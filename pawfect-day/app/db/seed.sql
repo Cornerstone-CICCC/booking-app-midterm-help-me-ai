@@ -8,3 +8,9 @@ VALUES
   ('PAW-84923', 'Mia Lee', 'mia@example.com', '604-555-0104', 'Nori', 'dog', 'Husky', 'large', 'deshedding_treatment', 75, 60.00, CURRENT_DATE + INTERVAL '1 day', '9:00 AM', 'Heavy shedding coat', 'completed'),
   ('PAW-84924', 'Taylor Brown', 'taylor@example.com', '604-555-0105', 'Charlie', 'dog', 'Golden Retriever', 'medium', 'puppys_first_groom', 45, 40.00, CURRENT_DATE + INTERVAL '1 day', '3:00 PM', 'First time at a groomer!', 'cancelled')
 ON CONFLICT (reference_number) DO NOTHING;
+
+INSERT INTO users (name, email, password, role)
+VALUES 
+  ('Admin Staff', 'staff@pawfectday.com', 'password123', 'admin'),
+  ('Makoto Arata', 'makoto.a@pawfectday.com', 'password123', 'staff')
+ON CONFLICT (email) DO NOTHING;
