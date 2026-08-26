@@ -1,16 +1,16 @@
 "use client";
 
-import { useActionState, useEffect, useState } from "react";
+import { useActionState, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 
 import Button from "@/app/components/ui/Button";
 import InputField from "@/app/components/ui/InputField";
 import {
   createBooking,
-} from "@/app/actions/bookings";
+  type BookingFormState,
+} from "@/app/(public)/book/action";
 import { SERVICES_LIST, type Service } from "@/app/lib/definitions";
 import type { PetSize, PetType, ServiceType } from "@/app/types/booking";
-import type { CreateBookingState } from "@/app/types/booking-action";
 
 import ProgressIndicator from "./progress-indicator";
 
@@ -54,10 +54,7 @@ const INITIAL_DRAFT: Draft = {
 
 const APPOINTMENT_TIMES = ["10:30 AM", "12:00 PM", "1:30 PM", "4:30 PM"];
 
-const INITIAL_BOOKING_STATE: CreateBookingState = {
-  success: false,
-  message: "",
-};
+const INITIAL_BOOKING_STATE: BookingFormState = {};
 
 export default function BookingForm() {
   const router = useRouter();
@@ -113,24 +110,6 @@ export default function BookingForm() {
     setError("");
     setStep((currentStep) => currentStep - 1);
   }
-
-  useEffect(() => {
-    if (!submissionState.success) {
-      return;
-    }
-
-    const params = new URLSearchParams({
-      pet: draft.pet,
-      service: selectedService?.name ?? "",
-      date: draft.date,
-      time: draft.time,
-      email: draft.email,
-      phone: draft.phone,
-      reference: submissionState.referenceNumber ?? "",
-    });
-
-    router.push(`/book/success?${params.toString()}`);
-  }, [draft, router, selectedService?.name, submissionState]);
 
   return (
     <div className="mx-auto max-w-[1210px]">
@@ -195,9 +174,9 @@ export default function BookingForm() {
 
 function BookingPayload({ draft }: { draft: Draft }) {
   const fields: Record<string, string> = {
-    ownerName: draft.name,
-    ownerEmail: draft.email,
-    ownerPhone: draft.phone,
+    customerName: draft.name,
+    email: draft.email,
+    phone: draft.phone,
     petName: draft.pet,
     petType: draft.type,
     petBreed: draft.breed,
@@ -299,7 +278,7 @@ function DateAndTimeStep({ draft, updateDraft }: { draft: Draft; updateDraft: Up
 
       {draft.date && (
         <div className="mt-7">
-          <h2 className="text-lg font-semibold text-brown">Available times for <span className="text-terra">{draft.date}</span></h2>
+          <h2 className="text-lg font-semibold text-brown">Available times for <span className="text-terra">{formatBookingDate(draft.date)}</span></h2>
           <TimeGroup label="Morning" times={APPOINTMENT_TIMES.slice(0, 2)} selected={draft.time} onSelect={(time) => updateDraft("time", time)} />
           <TimeGroup label="Afternoon" times={APPOINTMENT_TIMES.slice(2)} selected={draft.time} onSelect={(time) => updateDraft("time", time)} />
 
@@ -318,7 +297,7 @@ function Calendar({ days, selectedDate, onSelectDate }: { days: number[]; select
       {Array.from({ length: 5 }, (_, index) => <span key={index} />)}
       {days.map((day) => {
         const unavailable = day < 25 || day === 28 || day === 30;
-        const date = new Date(2026, 7, day).toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" });
+        const date = `2026-08-${String(day).padStart(2, "0")}`;
         const selected = selectedDate === date;
         const today = day === 25;
         const classes = selected ? "bg-terra text-white" : today ? "border border-terra text-terra" : unavailable ? "text-warm-border" : "text-brown";
@@ -344,7 +323,7 @@ function ReviewStep({ draft, service, editStep }: { draft: Draft; service: Servi
     <p className="mt-1 text-brown-mid">Everything look right? Submit your request and we&apos;ll be in touch.</p>
     <ReviewBlock title="Contact Details" onEdit={() => editStep(1)} values={[["Name", draft.name], ["Email", draft.email], ["Phone", draft.phone]]} />
     <ReviewBlock title="Pet Details" onEdit={() => editStep(2)} values={[["Pet Name", draft.pet], ["Type", draft.type.toLowerCase()], ["Breed", draft.breed || "—"], ["Size", draft.size]]} />
-    <ReviewBlock title="Appointment Details" onEdit={() => editStep(3)} values={[["Service", service.name], ["Duration", `~${service.durationMinutes} min`], ["Starting Price", `$${service.price}`], ["Date", draft.date], ["Time", draft.time]]} />
+    <ReviewBlock title="Appointment Details" onEdit={() => editStep(3)} values={[["Service", service.name], ["Duration", `~${service.durationMinutes} min`], ["Starting Price", `$${service.price}`], ["Date", formatBookingDate(draft.date)], ["Time", draft.time]]} />
   </>;
 }
 
@@ -355,6 +334,17 @@ function NextStepsNotice() {
       <b className="text-brown">Pending.</b> Our team will review your request and contact you within 24 hours to confirm the appointment.
     </p>
   );
+}
+
+function formatBookingDate(value: string) {
+  if (!value) return value;
+
+  return new Date(`${value}T00:00:00`).toLocaleDateString("en-US", {
+    weekday: "long",
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+  });
 }
 
 function FieldLabel({ children }: { children: React.ReactNode }) {

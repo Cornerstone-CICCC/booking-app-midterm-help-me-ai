@@ -1,16 +1,22 @@
-"use client";
-
 import Image from "next/image";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
 
 import { buttonStyles } from "@/app/components/ui/Button";
+import { getBookingByReferenceNumber } from "@/app/models/bookings";
+import { SERVICES_MASTER } from "@/app/types/booking";
 
 type BookingDetail = [label: string, value: string];
 
-export default function BookingSuccessPage() {
-  const searchParams = useSearchParams();
-  const booking = getBookingDetails(searchParams);
+type BookingSuccessPageProps = {
+  searchParams: Promise<{ ref?: string }>;
+};
+
+export default async function BookingSuccessPage({
+  searchParams,
+}: BookingSuccessPageProps) {
+  const { ref } = await searchParams;
+  const booking = ref ? await getBookingByReferenceNumber(ref) : null;
+  const details = booking ? getBookingDetails(booking) : null;
 
   return (
     <main className="min-h-screen bg-cream px-6 py-12">
@@ -21,40 +27,41 @@ export default function BookingSuccessPage() {
           Your request is on its way!
         </h1>
         <p className="mt-3 text-lg leading-7 text-brown-mid">
-          Thanks, {booking.pet}! We received your grooming request. Our team will
+          Thanks, {details?.petName ?? "there"}! We received your grooming request. Our team will
           contact you when the appointment is confirmed.
         </p>
 
         <BookingSummary
-          details={booking.details}
-          referenceNumber={booking.referenceNumber}
+          details={details?.details ?? []}
+          referenceNumber={booking?.referenceNumber ?? "Booking not found"}
         />
-        <WhatToExpect email={booking.email} />
+        <WhatToExpect email={booking?.email ?? "your email"} />
         <PageActions />
       </div>
     </main>
   );
 }
 
-function getBookingDetails(searchParams: ReturnType<typeof useSearchParams>) {
-  const pet = searchParams.get("pet") || "your pet";
-  const service = searchParams.get("service") || "Full Groom";
-  const date = searchParams.get("date") || "Wednesday, August 26, 2026";
-  const time = searchParams.get("time") || "12:00 PM";
-  const email = searchParams.get("email") || "your email";
-  const phone = searchParams.get("phone") || "your phone";
-  const referenceNumber = searchParams.get("reference") || "PAW-2608-0006";
+function getBookingDetails(booking: Awaited<ReturnType<typeof getBookingByReferenceNumber>>) {
+  if (!booking) return null;
+
+  const date = new Date(`${booking.bookingDate}T00:00:00`).toLocaleDateString("en-US", {
+    weekday: "long",
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+  });
 
   const details: BookingDetail[] = [
-    ["Pet Name", pet],
-    ["Service", service],
+    ["Pet Name", booking.petName],
+    ["Service", SERVICES_MASTER[booking.service].name],
     ["Date", date],
-    ["Time", time],
-    ["Contact Email", email],
-    ["Contact Phone", phone],
+    ["Time", booking.bookingTime],
+    ["Contact Email", booking.email],
+    ["Contact Phone", booking.phone],
   ];
 
-  return { pet, email, details, referenceNumber };
+  return { petName: booking.petName, details };
 }
 
 function ConfirmationAvatar() {
