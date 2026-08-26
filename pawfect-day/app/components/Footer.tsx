@@ -50,7 +50,7 @@ export default function Footer() {
               Sunday: Closed
             </p>
             <div className="mt-2 border-t border-cream/40 pt-2">
-                <Link href="/dashboard" className="text-cream/70 hover:text-terra transition-colors" >Staff Login</Link>
+                <Link href="/login" className="text-cream/70 hover:text-terra transition-colors" >Staff Login</Link>
             </div>
         </div>
       </div>
