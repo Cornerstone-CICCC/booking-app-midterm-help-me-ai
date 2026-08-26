@@ -72,6 +72,23 @@ export const SERVICES_LIST: Service[] = [
   },
 ];
 
+import { SERVICES_MASTER, type ServiceInfo } from "@/app/types/booking";
+
+// Compatibility view for public booking and services pages.
+// The database layer uses `SERVICES_MASTER` as its source of truth.
+export type Service = ServiceInfo & {
+  price: number;
+  includes: string[];
+};
+
+export const SERVICES_LIST: Service[] = Object.values(SERVICES_MASTER).map(
+  (service) => ({
+    ...service,
+    price: service.startingPrice,
+    includes: service.description.split(", "),
+  }),
+);
+
 // --- Form Validations and Struct ---
 
 export type BookingFormState = {
