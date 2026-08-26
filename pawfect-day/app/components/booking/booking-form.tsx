@@ -6,6 +6,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import Button from "@/app/components/ui/Button";
 import InputField from "@/app/components/ui/InputField";
 import { SERVICES_LIST, type Service } from "@/app/lib/definitions";
+import type { PetSize, PetType, ServiceType } from "@/app/types/booking";
 
 import ProgressIndicator from "./progress-indicator";
 
@@ -14,17 +15,23 @@ type Draft = {
   email: string;
   phone: string;
   pet: string;
-  type: string;
+  type: PetType | "";
   breed: string;
-  size: string;
-  service: string;
+  size: PetSize | "";
+  service: ServiceType | "";
   notes: string;
   date: string;
   time: string;
   alternateTime: string;
 };
 
-type UpdateDraft = (key: keyof Draft, value: string) => void;
+type UpdateDraft = <Key extends keyof Draft>(key: Key, value: Draft[Key]) => void;
+
+const PET_SIZES: Array<{ value: PetSize; label: string; description: string }> = [
+  { value: "small", label: "Small", description: "Under 20 lb" },
+  { value: "medium", label: "Medium", description: "20–50 lb" },
+  { value: "large", label: "Large", description: "Over 50 lb" },
+];
 
 const INITIAL_DRAFT: Draft = {
   name: "",
@@ -52,7 +59,7 @@ export default function BookingForm() {
   );
 
   const [step, setStep] = useState(1);
-  const [draft, setDraft] = useState(() => ({
+  const [draft, setDraft] = useState<Draft>(() => ({
     ...INITIAL_DRAFT,
     service: requestedService?.id ?? "",
   }));
@@ -62,7 +69,7 @@ export default function BookingForm() {
     (service) => service.id === draft.service,
   );
 
-  function updateDraft(key: keyof Draft, value: string) {
+  function updateDraft<Key extends keyof Draft>(key: Key, value: Draft[Key]) {
     setDraft((previous) => ({ ...previous, [key]: value }));
   }
 
@@ -197,8 +204,8 @@ function PetAndServiceStep({ draft, updateDraft }: { draft: Draft; updateDraft: 
 
         <FieldLabel>Pet Type *</FieldLabel>
         <div className="grid grid-cols-2 gap-3">
-          <ChoiceButton selected={draft.type === "Dog"} onClick={() => updateDraft("type", "Dog")}>🐶　Dog</ChoiceButton>
-          <ChoiceButton selected={draft.type === "Cat"} onClick={() => updateDraft("type", "Cat")}>🐱　Cat</ChoiceButton>
+          <ChoiceButton selected={draft.type === "dog"} onClick={() => updateDraft("type", "dog")}>🐶　Dog</ChoiceButton>
+          <ChoiceButton selected={draft.type === "cat"} onClick={() => updateDraft("type", "cat")}>🐱　Cat</ChoiceButton>
         </div>
 
         <div className="mt-6">
@@ -207,10 +214,10 @@ function PetAndServiceStep({ draft, updateDraft }: { draft: Draft; updateDraft: 
 
         <FieldLabel>Pet Size *</FieldLabel>
         <div className="grid grid-cols-3 gap-3">
-          {["Small", "Medium", "Large"].map((size, index) => (
-            <ChoiceButton key={size} stacked selected={draft.size === size} onClick={() => updateDraft("size", size)}>
-              <b>{size}</b>
-              <small>{["Under 20 lb", "20–50 lb", "Over 50 lb"][index]}</small>
+          {PET_SIZES.map((size) => (
+            <ChoiceButton key={size.value} stacked selected={draft.size === size.value} onClick={() => updateDraft("size", size.value)}>
+              <b>{size.label}</b>
+              <small>{size.description}</small>
             </ChoiceButton>
           ))}
         </div>
