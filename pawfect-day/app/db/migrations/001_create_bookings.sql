@@ -1,0 +1,21 @@
+CREATE TABLE IF NOT EXISTS bookings (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  reference_number VARCHAR(20) UNIQUE NOT NULL,
+  customer_name VARCHAR(255) NOT NULL,
+  email VARCHAR(255) NOT NULL,
+  phone VARCHAR(50) NOT NULL,
+  pet_name VARCHAR(100) NOT NULL,
+  pet_type VARCHAR(10) NOT NULL CHECK (pet_type IN ('dog', 'cat')),
+  pet_breed VARCHAR(100) NOT NULL,
+  pet_size VARCHAR(20) NOT NULL CHECK (pet_size IN ('small', 'medium', 'large')),
+  service VARCHAR(50) NOT NULL CHECK (service IN ('bath_and_brush', 'full_groom', 'nail_trim', 'deshedding_treatment', 'puppys_first_groom')),
+  duration_minutes INT NOT NULL,
+  starting_price DECIMAL(10, 2) NOT NULL,
+  booking_date DATE NOT NULL,
+  booking_time VARCHAR(20) NOT NULL,
+  alternate_time VARCHAR(20),
+  notes TEXT,
+  status VARCHAR(20) NOT NULL DEFAULT 'pending' CHECK (status IN ('pending', 'confirmed', 'completed', 'cancelled')),
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
