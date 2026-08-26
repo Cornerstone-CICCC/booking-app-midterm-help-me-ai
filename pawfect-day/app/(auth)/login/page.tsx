@@ -1,20 +1,28 @@
 // Staff login
-// import { StaffLoginForm } from '@/app/components/auth/login-form';
+import { StaffLoginForm } from "@/app/components/auth/login-form";
+import { LockKeyhole } from "lucide-react";
 
 export const metadata = {
-  title: 'Staff Login | Pawfect Day',
-  description: 'Access panel for groomers and administrative staff.',
+  title: "Staff Login | Pawfect Day",
+  description: "Access panel for groomers and administrative staff.",
 };
 
 export default function LoginPage() {
   return (
-    <main className="min-h-screen flex items-center justify-center p-4 bg-amber-50/50">
-      <div className="w-full max-w-md bg-white p-8 rounded-2xl shadow-sm border border-amber-100 space-y-6">
-        <div className="text-center space-y-2">
-          <h1 className="text-2xl font-bold text-amber-950">🐾 Pawfect Day Staff</h1>
-          <p className="text-sm text-amber-700/80">Manage appointments, status, and pet details.</p>
+    <main className="min-h-screen flex items-center justify-center p-4 bg-[#FAF6EF]">
+      <div className="w-full flex flex-col items-center max-w-lg p-8 space-y-6">
+        <div className="bg-[#ffeae3] p-4 rounded-2xl shadow-sm">
+          <LockKeyhole className="h-10 w-10 text-amber-700" />
         </div>
-        {/* <StaffLoginForm /> */}
+        <div className="text-center">
+          <h1 className="text-4xl font-bold text-[#2D1A0F]">
+            Staff Access Only
+          </h1>
+          <p className="text-lg text-[#7C6355]">
+            Sign in to manage grooming appointments.
+          </p>
+        </div>
+        <StaffLoginForm />
       </div>
     </main>
   );
