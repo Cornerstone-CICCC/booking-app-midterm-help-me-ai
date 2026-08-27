@@ -3,13 +3,18 @@ import pg from "pg";
 
 const { Pool } = pg;
 
+
 const pool = new Pool({
-	host: process.env.DB_HOST,
-	user: process.env.DB_USER,
-	port: 5432,
-	database: process.env.DB_DATABASE,
-	password: process.env.DB_PASS,
-	ssl: process.env.DB_SSL === "true" ? { rejectUnauthorized: false } : undefined,
+	...(process.env.DATABASE_URL
+		? { connectionString: process.env.DATABASE_URL }
+		: {
+		host: process.env.DB_HOST,
+		user: process.env.DB_USER,
+		port: 5432,
+		database: process.env.DB_DATABASE,
+		password: process.env.DB_PASS,
+		ssl: process.env.DB_SSL === "true" ? { rejectUnauthorized: false } : undefined,
+		}),
 });
 
 const migrationFiles = readdirSync("app/db/migrations").sort();

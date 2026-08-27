@@ -11,6 +11,6 @@ ON CONFLICT (reference_number) DO NOTHING;
 
 INSERT INTO users (name, email, password, role)
 VALUES 
-  ('Admin Staff', 'staff@pawfectday.com', 'password123', 'admin'),
-  ('Makoto Arata', 'makoto.a@pawfectday.com', 'password123', 'staff')
+  ('Admin Staff', 'staff@pawfectday.com', '$2b$10$VmoQzkjY88HyMsmvONHub.LR9YzMd2Yiwh5F0dYvZNBI4jy5YpXmK', 'admin'),
+  ('Makoto Arata', 'makoto.a@pawfectday.com', '$2b$10$VmoQzkjY88HyMsmvONHub.LR9YzMd2Yiwh5F0dYvZNBI4jy5YpXmK', 'staff')
 ON CONFLICT (email) DO NOTHING;

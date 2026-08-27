@@ -43,11 +43,6 @@ export async function loginAction(
     );
     const user = result.rows[0];
 
-    console.log("--- DEBUG AUTH ---");
-    console.log("User found:", user?.email);
-    console.log("Password Hash in DB:", user?.password);
-    console.log("Password Provided:", credentials.password);
-
     if (!user || !user.password) {
       return { error: "Invalid email or password." };
     }
@@ -70,8 +65,7 @@ export async function loginAction(
       },
       Boolean(credentials.rememberMe),
     );
-  } catch (err) {
-    console.error("[Login Action Error]:", err);
+  } catch {
     return { error: "Database connection failed. Please try again later." };
   }
 

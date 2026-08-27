@@ -1,8 +1,8 @@
 "use server";
 
-import { cookies } from "next/headers";
 import { revalidatePath } from "next/cache";
 import * as db from "@/app/models/bookings";
+import { verifySession } from "@/app/lib/auth";
 import {
 	BookingStatus,
 	ServiceType,
@@ -13,12 +13,8 @@ import {
  * Check authentication on server mutations
  */
 async function verifyStaffSession(): Promise<boolean> {
-	const cookieStore = await cookies();
-	const session =
-		cookieStore.get("auth_token") ||
-		cookieStore.get("session_token") ||
-		cookieStore.get("user");
-	return Boolean(session?.value);
+	const session = await verifySession();
+	return Boolean(session?.userId);
 }
 
 const isServiceType = (val: string): val is ServiceType => {

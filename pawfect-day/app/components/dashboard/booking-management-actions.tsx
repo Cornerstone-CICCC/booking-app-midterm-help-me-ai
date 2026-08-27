@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useState } from 'react';
-import type { Booking } from '@/app/lib/definitions';
+import type { Booking } from '@/app/types/booking';
 
 type Dialog = 'status' | 'delete' | null;
 
