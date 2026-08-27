@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import Link from 'next/link';
 import { BookingManagementActions } from '@/app/components/dashboard/booking-management-actions';
 import { SAMPLE_BOOKING } from '@/app/lib/booking-management';
@@ -23,3 +24,23 @@ export default async function BookingDetailsPage() {
     </main>
   );
 }
+=======
+import { notFound } from "next/navigation";
+import { getBookingById } from "@/app/models/bookings";
+import DetailsClient from "./details-client";
+
+interface PageProps {
+	params: Promise<{ id: string }>;
+}
+
+export default async function BookingDetailsPage({ params }: PageProps) {
+	const resolvedParams = await params;
+	const booking = await getBookingById(resolvedParams.id);
+
+	if (!booking) {
+		notFound();
+	}
+
+	return <DetailsClient booking={booking} />;
+}
+>>>>>>> 607e7fff087df40eb5d3916bfd6c89f23f726b24
