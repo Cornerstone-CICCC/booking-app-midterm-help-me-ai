@@ -38,7 +38,7 @@ export function StaffLoginForm() {
             id="email"
             name="email"
             type="email"
-            required
+            // required
             placeholder="staff@pawfectday.com"
             disabled={isPending}
             className="w-full pl-10 pr-4 py-2 text-sm border border-slate-300 text-slate-700 placeholder:text-slate-400 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 focus:outline-none disabled:opacity-50"
@@ -60,7 +60,7 @@ export function StaffLoginForm() {
             id="password"
             name="password"
             type={showPassword ? "text" : "password"}
-            required
+            // required
             placeholder="••••••••"
             disabled={isPending}
             className="w-full pl-10 pr-10 py-2 text-sm border border-slate-300 text-slate-700 placeholder:text-slate-400 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 focus:outline-none disabled:opacity-50"
