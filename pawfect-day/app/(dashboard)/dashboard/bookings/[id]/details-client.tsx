@@ -7,6 +7,7 @@ import type { Booking, BookingStatus, ServiceType } from "@/app/types/booking";
 import { SERVICES_MASTER } from "@/app/types/booking";
 import StatusModal from "@/app/components/dashboard/status-modal";
 import DeleteModal from "@/app/components/dashboard/delete-modal";
+import ButtonLink from "@/app/components/ui/ButtonLink";
 
 type Props = { booking: Booking };
 
@@ -24,16 +25,33 @@ const statusStyles: Record<BookingStatus, string> = {
 	cancelled: "bg-rose-100 text-rose-800 hover:bg-rose-200",
 };
 
+// function formatDate(value?: string | Date) {
+// 	if (!value) return "Not specified";
+
+// 	const str = typeof value === "string" ? value : value.toISOString();
+// 	const [year, month, day] = str.split("T")[0].split("-").map(Number);
+
+// 	if (!year || !month || !day) return String(value);
+// 	return new Intl.DateTimeFormat("en-US", {
+// 		month: "short",
+// 		day: "numeric",
+// 		year: "numeric",
+// 	}).format(new Date(year, month - 1, day));
+// }
+
+// format date only date, not time, in a human-readable format
 function formatDate(value?: string | Date) {
 	if (!value) return "Not specified";
-	const str = typeof value === "string" ? value : value.toISOString();
-	const [year, month, day] = str.split("T")[0].split("-").map(Number);
-	if (!year || !month || !day) return String(value);
+
+	const date = typeof value === "string" ? new Date(value) : value;
+
+	if (isNaN(date.getTime())) return String(value);
+
 	return new Intl.DateTimeFormat("en-US", {
 		month: "short",
 		day: "numeric",
 		year: "numeric",
-	}).format(new Date(year, month - 1, day));
+	}).format(date);
 }
 
 function StatusBadge({
@@ -80,7 +98,7 @@ export default function DetailsClient({ booking }: Props) {
 			)}
 
 			{/* Staff Sidebar */}
-			<aside className="flex w-full flex-col border-b border-[#e2d5c7] bg-[#f8f4ed] px-7 py-7 md:min-h-screen md:w-[298px] md:border-b-0 md:border-r md:px-8 md:py-8">
+			<aside className="flex w-full flex-col border-b border-warm-border bg-cream px-7 py-7 md:min-h-screen md:w-[298px] md:border-b-0 md:border-r md:px-8 md:py-8">
 				<div className="flex items-center gap-2 text-[22px] font-bold text-[#c6532c]">
 					<span className="text-xl">🐾</span>Pawfect Day
 				</div>
