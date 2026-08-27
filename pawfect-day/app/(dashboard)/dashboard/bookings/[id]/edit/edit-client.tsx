@@ -142,6 +142,7 @@ export default function EditClient({ booking }: Props) {
 
 		startTransition(async () => {
 			const res = await updateBookingAction(booking.id, formData);
+      
 			if (res.success) {
 				showToast("Booking updated successfully.", "success");
 				setTimeout(() => {
