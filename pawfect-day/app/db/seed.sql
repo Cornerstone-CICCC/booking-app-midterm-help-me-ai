@@ -16,6 +16,6 @@ VALUES
 ON CONFLICT (email) DO NOTHING;
 
 -- Update hashed password for staff accounts
-UPDATE users
-SET password = '$2a$10$wO3.7sY5UvCvgXgL.oAme.7Nn3b3F1sQJ3w7Vf5O8y4K4uE/cW14m'
-WHERE email IN ('staff@pawfectday.com', 'makoto.a@pawfectday.com');
+UPDATE users 
+SET password = '$2a$10$wO3.7sY5UvCvgXgL.oAme.7Nn3b3F1sQJ3w7Vf5O8y4K4uE/cW14m' 
+WHERE email = 'staff@pawfectday.com';
