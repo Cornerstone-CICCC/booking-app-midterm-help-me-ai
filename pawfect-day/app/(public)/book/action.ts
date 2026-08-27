@@ -16,6 +16,13 @@ export type BookingFormState = {
 	message?: string | null;
 };
 
+const PHONE_PATTERN = /^[+0-9().\-\s]+$/;
+
+function isValidPhoneNumber(value: string) {
+	const digitCount = value.replace(/\D/g, "").length;
+	return PHONE_PATTERN.test(value) && digitCount >= 7 && digitCount <= 15;
+}
+
 export async function createBooking(
 	_previousState: BookingFormState,
 	formData: FormData,
@@ -44,7 +51,7 @@ export async function createBooking(
 	if (!customerName) errors.customerName = "Full name is required.";
 	if (!email || !/^\S+@\S+\.\S+$/.test(email))
 		errors.email = "Valid email is required.";
-	if (!phone) errors.phone = "Phone number is required.";
+	if (!isValidPhoneNumber(phone)) errors.phone = "Valid phone number is required.";
 	if (!petName) errors.petName = "Pet name is required.";
 	if (!isPetType(petType)) errors.petType = "Choose a valid pet type.";
 	if (!isPetSize(petSize)) errors.petSize = "Choose a valid pet size.";
