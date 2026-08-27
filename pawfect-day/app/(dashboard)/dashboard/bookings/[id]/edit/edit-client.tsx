@@ -55,6 +55,39 @@ const AVAILABLE_TIMES = [
 	"4:30 PM",
 ];
 
+const Field = ({
+	id,
+	label,
+	error,
+	required,
+	children,
+}: {
+	id: string;
+	label: string;
+	error?: string;
+	required?: boolean;
+	children: React.ReactNode;
+}) => (
+	<div>
+		<label
+			htmlFor={id}
+			className="block text-sm font-semibold text-[#3d3028] mb-1.5"
+		>
+			{label}
+			{required && <span className="text-[#c6532c] ml-1">*</span>}
+		</label>
+		{children}
+		{error && (
+			<p className="mt-1.5 text-xs font-semibold text-rose-600">⚠ {error}</p>
+		)}
+	</div>
+);
+
+const inputCls = (err?: string) =>
+	`w-full px-4 py-3 rounded-xl border bg-[#fffdfa] text-sm text-[#3d3028] transition-colors outline-none
+     focus:ring-2 focus:ring-[#c6532c]/20 focus:border-[#c6532c]
+     ${err ? "border-rose-500 bg-rose-50/40" : "border-[#e8ded2] hover:border-[#b85d3d]"}`;
+
 export default function EditClient({ booking }: Props) {
 	const router = useRouter();
 	const [isPending, startTransition] = useTransition();
@@ -123,39 +156,6 @@ export default function EditClient({ booking }: Props) {
 		});
 	};
 
-	const inputCls = (err?: string) =>
-		`w-full px-4 py-3 rounded-xl border bg-[#fffdfa] text-sm text-[#3d3028] transition-colors outline-none
-     focus:ring-2 focus:ring-[#c6532c]/20 focus:border-[#c6532c]
-     ${err ? "border-rose-500 bg-rose-50/40" : "border-[#e8ded2] hover:border-[#b85d3d]"}`;
-
-	const Field = ({
-		id,
-		label,
-		error,
-		required,
-		children,
-	}: {
-		id: string;
-		label: string;
-		error?: string;
-		required?: boolean;
-		children: React.ReactNode;
-	}) => (
-		<div>
-			<label
-				htmlFor={id}
-				className="block text-sm font-semibold text-[#3d3028] mb-1.5"
-			>
-				{label}
-				{required && <span className="text-[#c6532c] ml-1">*</span>}
-			</label>
-			{children}
-			{error && (
-				<p className="mt-1.5 text-xs font-semibold text-rose-600">⚠ {error}</p>
-			)}
-		</div>
-	);
-
 	return (
 		<div className="min-h-screen bg-[#fbf8f2] text-[#3d3028] md:flex">
 			{/* Toast Notification Container */}
@@ -210,7 +210,7 @@ export default function EditClient({ booking }: Props) {
 									d="M15 19l-7-7 7-7"
 								/>
 							</svg>
-							Back to {booking.petName}’s Booking
+							Back to {booking.petName}'s Booking
 						</Link>
 						<h1 className="font-serif text-3xl font-bold text-[#3d3028]">
 							Edit Booking
