@@ -73,12 +73,12 @@ export default function ServiceCard({ serviceId }: ServiceCardProps) {
         </div>
 
         <ButtonLink
-          href={`/services/${serviceId}`}
+          href={`/book`}
           variant="primary"
           size="medium"
           className="mt-4 w-fit"
         >
-          Select This Service
+          Book This Service
         </ButtonLink>
       </div>
     </div>

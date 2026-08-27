@@ -39,12 +39,12 @@ export default function ServiceCard({
           </div>
 
           <ButtonLink
-            href={`/services/${serviceId}`}
+            href={`/book`}
             variant="secondary"
             size="medium"
             className="mt-4 w-fit"
           >
-            Select This Service
+            Select Service
           </ButtonLink>
         </div>
       </div>

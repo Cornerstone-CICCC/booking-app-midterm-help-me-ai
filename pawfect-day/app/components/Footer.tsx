@@ -21,7 +21,7 @@ export default function Footer() {
             <span aria-hidden="true">🐾</span>
             <span>Pawfect Day</span>
           </div>
-          <p className="text-cream/70">
+          <p className="text-cream/70 max-w-[400px] mt-4 text-sm">
             A warm, professional grooming salon where every pet is treated with
             care, patience and love.
           </p>
