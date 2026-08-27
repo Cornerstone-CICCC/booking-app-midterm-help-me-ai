@@ -8,19 +8,25 @@ export default function Services() {
   return (
     <main>
       <NavBar />
-      <section id="hero-service" className="flex flex-col items-start justify-center mt-8 bg-brown px-24 py-12 gap-4">
-        <span className="text-sm font-semibold text-brown-mid uppercase tracking-wide">
-          What we offer
-        </span>
+      <header className="bg-brown px-6 py-20 text-cream">
+        <div className="mx-auto max-w-7xl">
+          <p className="text-sm font-semibold uppercase  text-terra-light">
+            What we offer
+          </p>
+          <h1 className="mt-3 font-display text-5xl font-semibold md:text-6xl">
+            Grooming Services
+          </h1>
+          <p className="mt-4 max-w-2xl text-lg  text-cream/70">
+            Every service is designed with your pet’s comfort and wellbeing in
+            mind. Our groomers take the time to make every visit stress-free.
+          </p>
+        </div>
+      </header>
 
-        <h1 className="text-6xl font-bold text-center text-cream">Grooming Services</h1>
-        <span className="text-sm text-center text-brown-mid mt-2">
-          Every service is designed with your pet's comfort and wellbeing in
-          mind. Our experienced groomers take the time to make each visit
-          stress-free.
-        </span>
-      </section>
-      <section id="services" className="flex flex-col gap-6 max-w-4xl mx-auto my-8">
+      <section
+        id="services"
+        className="flex flex-col gap-6 px-6 py-12 md:px-24 md:py-16"
+      >
         <CardService serviceId="bath_and_brush" href="" />
         <CardService serviceId="full_groom" href="" />
         <CardService serviceId="nail_trim" href="" />
