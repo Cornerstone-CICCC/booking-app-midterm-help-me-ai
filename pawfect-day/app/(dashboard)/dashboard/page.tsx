@@ -1,3 +1,8 @@
-import DashboardPage from './dashboard';
+import DashboardClient from "@/app/components/dashboard/dashboard-client";
+import { getBookings } from "@/app/models/bookings";
 
-export default DashboardPage;
+export default async function DashboardPage() {
+	const bookings = await getBookings();
+
+	return <DashboardClient bookings={bookings} />;
+}
