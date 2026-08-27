@@ -3,6 +3,8 @@
 import { useMemo, useState } from "react";
 import type { Booking, BookingStatus, ServiceType } from "@/app/types/booking";
 import { SERVICES_MASTER } from "@/app/types/booking";
+import StatusModal from "./status-modal";
+import DeleteModal from "./delete-modal";
 
 type Props = { bookings: Booking[] };
 
@@ -48,25 +50,23 @@ function timeLabel(value: string) {
 	}).format(date);
 }
 
-function StatusBadge({ status }: { status: BookingStatus }) {
+function StatusBadge({
+	status,
+	onClick,
+}: {
+	status: BookingStatus;
+	onClick?: () => void;
+}) {
 	return (
-		<span
-			className={`inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-semibold ${statusStyles[status]}`}
+		<button
+			type="button"
+			onClick={onClick}
+			className={`inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-semibold transition-colors cursor-pointer ${statusStyles[status]}`}
+			title="Click to change status"
 		>
 			<span className="h-1.5 w-1.5 rounded-full bg-current" />
 			{statusLabels[status]}
-		</span>
-	);
-}
-
-function Actions({ id }: { id: string }) {
-	return (
-		<div className="flex gap-3 text-xs font-semibold text-[#b85d3d]">
-			<a href={`/dashboard/bookings/${id}`}>View</a>
-			<a href={`/dashboard/bookings/${id}/edit`}>Edit</a>
-			<button type="button">Status</button>
-			<button type="button">Delete</button>
-		</div>
+		</button>
 	);
 }
 
@@ -75,6 +75,9 @@ export default function DashboardClient({ bookings }: Props) {
 	const [status, setStatus] = useState("");
 	const [service, setService] = useState("");
 	const [date, setDate] = useState("");
+
+	const [statusTarget, setStatusTarget] = useState<Booking | null>(null);
+	const [deleteTarget, setDeleteTarget] = useState<Booking | null>(null);
 
 	const filtered = useMemo(() => {
 		return bookings.filter((booking) => {
@@ -99,19 +102,50 @@ export default function DashboardClient({ bookings }: Props) {
 		setService("");
 		setDate("");
 	};
-
+	const todayStr = new Date().toISOString().split("T")[0];
 	const cards = [
 		[
 			"Today's Bookings",
-			bookings.filter((b) => b.bookingDate === "2026-08-25").length,
+			bookings.filter((b) => b.bookingDate === todayStr).length,
 		],
 		["Pending Requests", bookings.filter((b) => b.status === "pending").length],
 		["Confirmed", bookings.filter((b) => b.status === "confirmed").length],
 		["Completed", bookings.filter((b) => b.status === "completed").length],
 	];
 
+	const renderActions = (booking: Booking) => (
+		<div className="flex gap-3 text-xs font-semibold text-[#b85d3d]">
+			<a href={`/dashboard/bookings/${booking.id}`} className="hover:underline">
+				View
+			</a>
+			<a
+				href={`/dashboard/bookings/${booking.id}/edit`}
+				className="hover:underline"
+			>
+				Edit
+			</a>
+			<button
+				type="button"
+				onClick={() => setDeleteTarget(booking)}
+				className="hover:underline text-rose-700"
+			>
+				Delete
+			</button>
+		</div>
+	);
+
 	return (
 		<div className="min-h-screen bg-[#fbf8f2] text-[#3d3028] md:flex">
+			{/* Modals */}
+			<StatusModal
+				booking={statusTarget}
+				onClose={() => setStatusTarget(null)}
+			/>
+			<DeleteModal
+				booking={deleteTarget}
+				onClose={() => setDeleteTarget(null)}
+			/>
+
 			<aside className="flex w-full flex-col border-b border-[#e2d5c7] bg-[#f8f4ed] px-7 py-7 md:min-h-screen md:w-[298px] md:border-b-0 md:border-r md:px-8 md:py-8">
 				<div className="flex items-center gap-2 text-[22px] font-bold text-[#c6532c]">
 					<span className="text-xl">🐾</span>Pawfect Day
@@ -253,11 +287,12 @@ export default function DashboardClient({ bookings }: Props) {
 												booking.service}
 										</td>
 										<td className="px-5 py-4">
-											<StatusBadge status={booking.status} />
+											<StatusBadge
+												status={booking.status}
+												onClick={() => setStatusTarget(booking)}
+											/>
 										</td>
-										<td className="px-5 py-4">
-											<Actions id={booking.id} />
-										</td>
+										<td className="px-5 py-4">{renderActions(booking)}</td>
 									</tr>
 								))}
 							</tbody>
@@ -277,7 +312,10 @@ export default function DashboardClient({ bookings }: Props) {
 											{booking.customerName} · {booking.petType}
 										</p>
 									</div>
-									<StatusBadge status={booking.status} />
+									<StatusBadge
+										status={booking.status}
+										onClick={() => setStatusTarget(booking)}
+									/>
 								</div>
 								<p className="mt-4 text-sm font-semibold">
 									{SERVICES_MASTER[booking.service as ServiceType]?.name ||
@@ -287,9 +325,7 @@ export default function DashboardClient({ bookings }: Props) {
 									{dateLabel(booking.bookingDate)} ·{" "}
 									{timeLabel(booking.bookingTime)}
 								</p>
-								<div className="mt-4">
-									<Actions id={booking.id} />
-								</div>
+								<div className="mt-4">{renderActions(booking)}</div>
 							</article>
 						))}
 					</div>
