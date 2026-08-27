@@ -9,7 +9,7 @@ export const metadata = {
 
 export default function LoginPage() {
   return (
-    <main className="min-h-screen flex items-center justify-center p-4 bg-[#FAF6EF]">
+    <main className="min-h-screen flex items-center justify-center p-4 bg-cream">
       <div className="w-full flex flex-col items-center max-w-lg p-8 space-y-6">
         <div className="bg-[#ffeae3] p-4 rounded-2xl shadow-sm">
           <LockKeyhole className="h-10 w-10 text-amber-700" />
