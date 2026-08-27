@@ -77,6 +77,19 @@ export async function createBooking(
 		return { success: false, message: "Please correct the errors below." };
 	}
 
+	// Check double-booking
+	const isAvailable = await db.checkSlotAvailability(bookingDate, bookingTime);
+	if (!isAvailable) {
+		return {
+			success: false,
+			errors: {
+				bookingTime:
+					"Sorry, this time was just booked by another customer. Please select another available time.",
+			},
+			message: "Time slot unavailable.",
+		};
+	}
+
 	const serviceMeta = SERVICES_MASTER[service];
 	const referenceNumber = createReferenceNumber();
 
