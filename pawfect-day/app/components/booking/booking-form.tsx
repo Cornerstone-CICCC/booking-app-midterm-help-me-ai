@@ -30,6 +30,7 @@ type Draft = {
 };
 
 type UpdateDraft = <Key extends keyof Draft>(key: Key, value: Draft[Key]) => void;
+type DetailsErrors = Partial<Record<"name" | "email" | "phone", string>>;
 
 const PET_SIZES: Array<{ value: PetSize; label: string; description: string }> = [
   { value: "small", label: "Small", description: "Under 20 lb" },
@@ -55,6 +56,13 @@ const INITIAL_DRAFT: Draft = {
 const APPOINTMENT_TIMES = ["10:30 AM", "12:00 PM", "1:30 PM", "4:30 PM"];
 
 const INITIAL_BOOKING_STATE: BookingFormState = {};
+const EMAIL_PATTERN = /^\S+@\S+\.\S+$/;
+const PHONE_PATTERN = /^[+0-9().\-\s]+$/;
+
+function isValidPhoneNumber(value: string) {
+  const digitCount = value.replace(/\D/g, "").length;
+  return PHONE_PATTERN.test(value) && digitCount >= 7 && digitCount <= 15;
+}
 
 export default function BookingForm() {
   const router = useRouter();
@@ -70,6 +78,8 @@ export default function BookingForm() {
     service: requestedService?.id ?? "",
   }));
   const [error, setError] = useState("");
+  const [detailsErrors, setDetailsErrors] = useState<DetailsErrors>({});
+  const [isSubmissionErrorDismissed, setIsSubmissionErrorDismissed] = useState(false);
   const [submissionState, submitBookingAction, isSubmitting] = useActionState(
     createBooking,
     INITIAL_BOOKING_STATE,
@@ -97,17 +107,37 @@ export default function BookingForm() {
   }
 
   function continueBooking() {
+    if (step === 1) {
+      const errors: DetailsErrors = {};
+
+      if (!draft.name.trim()) errors.name = "Full name is required.";
+      if (!EMAIL_PATTERN.test(draft.email.trim())) {
+        errors.email = "Enter a valid email address.";
+      }
+      if (!isValidPhoneNumber(draft.phone.trim())) {
+        errors.phone = "Enter a valid phone number.";
+      }
+
+      setDetailsErrors(errors);
+      if (Object.keys(errors).length > 0) {
+        setError("Please correct the highlighted fields before continuing.");
+        return;
+      }
+    }
+
     if (!isStepComplete()) {
       setError("Please complete the required fields before continuing.");
       return;
     }
 
+    setDetailsErrors({});
     setError("");
     setStep((currentStep) => currentStep + 1);
   }
 
   function goBack() {
     setError("");
+    setIsSubmissionErrorDismissed(true);
     setStep((currentStep) => currentStep - 1);
   }
 
@@ -116,7 +146,7 @@ export default function BookingForm() {
       <ProgressIndicator currentStep={step} />
 
       <section className="mt-16 rounded-[28px] border border-warm-border bg-white px-7 py-14 sm:px-14 lg:px-[58px]">
-        {step === 1 && <DetailsStep draft={draft} updateDraft={updateDraft} />}
+        {step === 1 && <DetailsStep draft={draft} updateDraft={updateDraft} errors={detailsErrors} />}
         {step === 2 && <PetAndServiceStep draft={draft} updateDraft={updateDraft} />}
         {step === 3 && <DateAndTimeStep draft={draft} updateDraft={updateDraft} />}
         {step === 4 && selectedService && (
@@ -131,10 +161,20 @@ export default function BookingForm() {
             {error}
           </p>
         )}
-        {!submissionState.success && submissionState.message && (
-          <p role="alert" className="mt-6 rounded-xl bg-terra-faint px-4 py-3 text-terra-dark">
-            {submissionState.message}
-          </p>
+        {!isSubmissionErrorDismissed && !submissionState.success && submissionState.message && (
+          <div
+            role="alert"
+            className="mt-6 rounded-xl bg-terra-faint px-4 py-3 text-terra-dark"
+          >
+            <p>{submissionState.message}</p>
+            {submissionState.errors && (
+              <ul className="mt-2 list-disc space-y-1 pl-5">
+                {Object.entries(submissionState.errors).map(([field, message]) => (
+                  <li key={field}>{message}</li>
+                ))}
+              </ul>
+            )}
+          </div>
         )}
       </section>
 
@@ -156,7 +196,7 @@ export default function BookingForm() {
         )}
 
         {step === 4 ? (
-          <form action={submitBookingAction}>
+          <form action={submitBookingAction} onSubmit={() => setIsSubmissionErrorDismissed(false)}>
             <BookingPayload draft={draft} />
             <Button className="min-w-60" type="submit" disabled={isSubmitting}>
               {isSubmitting ? "Sending request…" : "Request Appointment"}
@@ -191,7 +231,7 @@ function BookingPayload({ draft }: { draft: Draft }) {
   return <>{Object.entries(fields).map(([name, value]) => <input key={name} type="hidden" name={name} value={value} />)}</>;
 }
 
-function DetailsStep({ draft, updateDraft }: { draft: Draft; updateDraft: UpdateDraft }) {
+function DetailsStep({ draft, updateDraft, errors }: { draft: Draft; updateDraft: UpdateDraft; errors: DetailsErrors }) {
   return (
     <>
       <h1 className="font-display text-4xl font-semibold sm:text-5xl">
@@ -202,9 +242,9 @@ function DetailsStep({ draft, updateDraft }: { draft: Draft; updateDraft: Update
       </p>
 
       <div className="mt-16 space-y-3">
-        <InputField label="Full Name" required placeholder="e.g. Joy Kosol" className="h-20 rounded-[20px] px-7 text-lg" value={draft.name} onChange={(event) => updateDraft("name", event.target.value)} />
-        <InputField label="Email Address" required type="email" placeholder="e.g. joy@email.com" className="h-20 rounded-[20px] px-7 text-lg" value={draft.email} onChange={(event) => updateDraft("email", event.target.value)} />
-        <InputField label="Phone Number" required type="tel" placeholder="e.g. 555-123-4567" className="h-20 rounded-[20px] px-7 text-lg" value={draft.phone} onChange={(event) => updateDraft("phone", event.target.value)} />
+        <InputField label="Full Name" required placeholder="e.g. Joy Kosol" error={errors.name} className="h-20 rounded-[20px] px-7 text-lg" value={draft.name} onChange={(event) => updateDraft("name", event.target.value)} />
+        <InputField label="Email Address" required type="email" placeholder="e.g. joy@email.com" error={errors.email} className="h-20 rounded-[20px] px-7 text-lg" value={draft.email} onChange={(event) => updateDraft("email", event.target.value)} />
+        <InputField label="Phone Number" required type="tel" placeholder="e.g. 555-123-4567" error={errors.phone} className="h-20 rounded-[20px] px-7 text-lg" value={draft.phone} onChange={(event) => updateDraft("phone", event.target.value)} />
       </div>
 
       <div className="mt-10 flex gap-4 rounded-[20px] bg-cream-dark px-8 py-6 text-lg text-brown-mid">
@@ -261,7 +301,9 @@ function PetAndServiceStep({ draft, updateDraft }: { draft: Draft; updateDraft: 
 }
 
 function DateAndTimeStep({ draft, updateDraft }: { draft: Draft; updateDraft: UpdateDraft }) {
-  const days = Array.from({ length: 31 }, (_, index) => index + 1);
+  const [displayedMonth, setDisplayedMonth] = useState(
+    () => new Date(new Date().getFullYear(), new Date().getMonth(), 1),
+  );
 
   function chooseDate(date: string) {
     updateDraft("date", date);
@@ -269,12 +311,23 @@ function DateAndTimeStep({ draft, updateDraft }: { draft: Draft; updateDraft: Up
     updateDraft("alternateTime", "");
   }
 
+  function changeMonth(offset: number) {
+    setDisplayedMonth(
+      (month) => new Date(month.getFullYear(), month.getMonth() + offset, 1),
+    );
+  }
+
   return (
     <>
       <h1 className="font-display text-4xl font-semibold">When should we welcome your pet?</h1>
       <p className="mt-1 text-brown-mid">Select a date and your preferred grooming time.</p>
 
-      <Calendar days={days} selectedDate={draft.date} onSelectDate={chooseDate} />
+      <Calendar
+        month={displayedMonth}
+        selectedDate={draft.date}
+        onSelectDate={chooseDate}
+        onChangeMonth={changeMonth}
+      />
 
       {draft.date && (
         <div className="mt-7">
@@ -289,18 +342,40 @@ function DateAndTimeStep({ draft, updateDraft }: { draft: Draft; updateDraft: Up
   );
 }
 
-function Calendar({ days, selectedDate, onSelectDate }: { days: number[]; selectedDate: string; onSelectDate: (date: string) => void }) {
+function Calendar({ month, selectedDate, onSelectDate, onChangeMonth }: { month: Date; selectedDate: string; onSelectDate: (date: string) => void; onChangeMonth: (offset: number) => void }) {
+  const year = month.getFullYear();
+  const monthIndex = month.getMonth();
+  const days = Array.from(
+    { length: new Date(year, monthIndex + 1, 0).getDate() },
+    (_, index) => index + 1,
+  );
+  const leadingBlankDays = Array.from(
+    { length: new Date(year, monthIndex, 1).getDay() },
+    (_, index) => index,
+  );
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const monthLabel = month.toLocaleDateString("en-US", {
+    month: "long",
+    year: "numeric",
+  });
+
   return <div className="mt-8 overflow-hidden rounded-2xl border border-warm-border">
-    <div className="flex justify-between border-b border-warm-border px-8 py-5 font-display text-lg font-semibold"><span>‹</span><span>August 2026</span><span>›</span></div>
+    <div className="flex justify-between border-b border-warm-border px-8 py-5 font-display text-lg font-semibold">
+      <button type="button" onClick={() => onChangeMonth(-1)} aria-label="Previous month" className="-my-3 -ml-3 flex h-12 w-12 cursor-pointer items-center justify-center rounded-lg text-3xl leading-none">‹</button>
+      <span>{monthLabel}</span>
+      <button type="button" onClick={() => onChangeMonth(1)} aria-label="Next month" className="-my-3 -mr-3 flex h-12 w-12 cursor-pointer items-center justify-center rounded-lg text-3xl leading-none">›</button>
+    </div>
     <div className="grid grid-cols-7 gap-y-4 px-8 py-6 text-center text-sm">
       {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => <b key={day} className="text-brown-mid">{day}</b>)}
-      {Array.from({ length: 5 }, (_, index) => <span key={index} />)}
+      {leadingBlankDays.map((index) => <span key={index} />)}
       {days.map((day) => {
-        const unavailable = day < 25 || day === 28 || day === 30;
-        const date = `2026-08-${String(day).padStart(2, "0")}`;
+        const date = `${year}-${String(monthIndex + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+        const dateValue = new Date(year, monthIndex, day);
+        const unavailable = dateValue < today;
         const selected = selectedDate === date;
-        const today = day === 25;
-        const classes = selected ? "bg-terra text-white" : today ? "border border-terra text-terra" : unavailable ? "text-warm-border" : "text-brown";
+        const isToday = dateValue.getTime() === today.getTime();
+        const classes = selected ? "bg-terra text-white" : isToday ? "border border-terra text-terra" : unavailable ? "text-warm-border" : "text-brown";
         return <button key={day} type="button" disabled={unavailable} onClick={() => onSelectDate(date)} className={`mx-auto h-9 w-12 rounded-lg font-semibold ${classes}`}>{day}</button>;
       })}
     </div>
