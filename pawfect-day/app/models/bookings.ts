@@ -30,6 +30,15 @@ type BookingRow = {
 
 // Convert DB snake_case row -> TS camelCase
 function formatBooking(row: BookingRow): Booking {
+	let bookingDate = "";
+	if (row.booking_date) {
+		const raw = row.booking_date as unknown;
+		if (raw instanceof Date) {
+			bookingDate = raw.toISOString().split("T")[0];
+		} else {
+			bookingDate = String(raw).split("T")[0];
+		}
+	}
 	return {
 		id: row.id,
 		referenceNumber: row.reference_number,
@@ -43,13 +52,16 @@ function formatBooking(row: BookingRow): Booking {
 		service: row.service,
 		durationMinutes: row.duration_minutes,
 		startingPrice: Number(row.starting_price),
-		bookingDate: row.booking_date,
+		bookingDate: bookingDate,
 		bookingTime: row.booking_time,
 		alternateTime: row.alternate_time,
 		notes: row.notes,
 		status: row.status,
-		createdAt: row.created_at,
-		updatedAt: row.updated_at ?? undefined,
+		createdAt:
+			typeof row.created_at === "string"
+				? row.created_at
+				: new Date(row.created_at).toISOString(),
+		updatedAt: row.updated_at ? String(row.updated_at) : undefined,
 	};
 }
 
