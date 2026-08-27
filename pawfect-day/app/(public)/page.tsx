@@ -8,6 +8,7 @@ import Button from "../components/ui/Button";
 import CardHome from "../components/ui/CardHome";
 import Link from "next/link";
 import Testimonial from "../components/ui/Testimonial";
+import Modal from "../components/ui/ChangeStatusModal";
 
 type processStep = {
   stepNumber: number;
@@ -169,6 +170,7 @@ export default function Home() {
           <CardHome serviceId="deshedding_treatment" href="" />
         </div>
       </section>
+    
 
       <section
         id="why_choose_us"
