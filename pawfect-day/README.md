@@ -1,36 +1,82 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🐾 Pawfect Day — Pet Grooming Online Booking App
 
-## Getting Started
+> **WD-301 Midterm Project**  
+> A full-stack, responsive booking and appointment management web application tailored specifically for **Pawfect Day**, a boutique pet grooming salon. Built with Next.js App Router, TypeScript, Tailwind CSS, and Neon PostgreSQL.
 
-First, run the development server:
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## 🔗 Live Deployment & Repository Links
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- **Live Application URL**: [Pawfect Day](https://pawfect-day-seven.vercel.app/)
+- **GitHub Repository**: [https://github.com/Cornerstone-CICCC/booking-app-midterm-help-me-ai](https://github.com/Cornerstone-CICCC/booking-app-midterm-help-me-ai)
+- **Database**: Hosted PostgreSQL instance on [Neon](https://neon.tech)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 🐱 Team Members & Responsibilities
 
-## Learn More
+|   #   | Name                          | GitHub                                             | Role                                                            | Key Contributions                                                                                                                                                                                                                                                                         |
+| :---: | :---------------------------- | :------------------------------------------------- | :-------------------------------------------------------------- | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **1** | **Alejandro Suárez González** | [@ASuarez18](https://github.com/ASuarez18)         | **Tech Lead & Authentication**                                  | Project architecture setup, public/protected route protection, staff session/auth token management, and final release orchestration.                                                                                                                                                      |
+| **2** | **Makoto Arata**              | [@maco-ovo](https://github.com/maco-ovo)           | **Backend, Database & Server Actions** / **Booking Management** | Neon PostgreSQL schema migrations & seed data, shared TypeScript types, Model layer (`lib/bookings.ts`), Server Actions CRUD mutations, and server-side validation. Booking Details view, appointment editing, Change Status modal dialog, and destructive Delete Confirmation workflows. |
+| **3** | **Joy Kosol**                 | [@JoyIsHappii](https://github.com/JoyIsHappii)     | **Public UI & Design System**                                   | Shared design system tokens (Buttons, Inputs, Modals, Badges), Homepage layout, and Services showcase page.                                                                                                                                                                               |
+| **4** | **Togo Yokoyama**             | [@YokoyamaTogo](https://github.com/YokoyamaTogo)   | **Public Booking Flow**                                         | Custom 4-step booking wizard (Details → Pet & Service → Date & Time → Review), multi-step state preservation, and confirmation workflow.                                                                                                                                                  |
+| **5** | **Mamede Santana**            | [@mamedesantana](https://github.com/mamedesantana) | **Staff Dashboard UI**                                          | Dashboard layout, dynamic summary KPI cards, search bar, multi-attribute filter controls (Status, Service, Date), and responsive table UI.                                                                                                                                                |
+| **6** | **Patricio Caballero**        | [@p4t0110](https://github.com/p4t0110)             |                                                                 |                                                                                                                                                                                                                                                                                           |
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 🐾 Chosen Business: Pawfect Day
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+**Pawfect Day** is a specialized boutique pet grooming salon.
 
-## Deploy on Vercel
+This platform solves these challenges with two core systems:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+1. **Public Self-Service Booking (No Login Required)**
+2. **Protected Staff Dashboard (Staff Access Only)**
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+
+## ✨ Key Features & Architecture
+
+### 🐶 1. Public Booking Experience
+
+- **Custom Multi-Step Booking Wizard**:
+  - **Step 1: Your Details**: Owner contact info (Name, Email, Phone format validation).
+  - **Step 2: Pet & Service**: Pet name, species, breed, size, and grooming service selection.
+  - **Step 3: Date & Time**
+  - **Step 4: Review & Submit**
+- **Reference Number Generation**
+- **Server-Side Validation**
+
+### 🔐 2. Protected Staff Dashboard & Booking Management
+
+- **Authentication & Route Protection**: Unauthenticated access to `/dashboard/*` immediately redirects to `/login`.
+- **Server-Level Mutation Protection**: Every mutation action (`updateBooking`, `changeBookingStatus`, `deleteBooking`) verifies an active staff session on the server side
+- **Multi-Attribute Filtering & Search**
+- **Complete CRUD Operations**:
+  - **View Details**
+  - **Edit Appointment**
+  - **Status Modal**
+  - **Destructive Deletion**
+
+---
+
+## 🛠️ Tech Stack
+
+- **Framework**: [Next.js](https://nextjs.org/) (App Router, Server Components & Server Actions)
+- **Frontend UI**: [React](https://react.dev/), [Tailwind CSS](https://tailwindcss.com/)
+- **Database**: PostgreSQL hosted on [Neon](https://neon.tech)
+- **Database Driver**: `pg` (Node Postgres Connection Pool) / `@neondatabase/serverless`
+- **Language**: TypeScript
+- **Deployment Platform**: [Vercel](https://vercel.com)
+
+---
+
+## Getting Started (Local Development)
+
+### 1. Prerequisites
+
+- Node.js (v20+ recommended)
+- Access to a Neon PostgreSQL instance
+
