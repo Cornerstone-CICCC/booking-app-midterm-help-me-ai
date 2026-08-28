@@ -162,14 +162,28 @@ export default function DashboardClient({ bookings }: Props) {
           <span className="mr-3">▣</span>Bookings
         </a>
 
-        <form action={logoutAction} className="mt-auto w-full">
-          <button
-            type="submit"
-            className="flex w-full items-center justify-center rounded-xl bg-[#c6532c] px-2 py-3 text-lg font-bold cursor-pointer text-[#fff0eb] hover:bg-[#8f3919] transition-colors"
-          >
-            <LogOut color="#ffffff" className="mr-3" />Logout
-          </button>
-        </form>
+        <div className="mt-auto -mx-7 border-t border-[#e2d5c7] px-7 pt-7 md:-mx-8 md:px-8">
+          <div className="flex items-center gap-4">
+            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[#f9ded6] text-lg font-bold text-[#c6532c]">
+              S
+            </div>
+            <div className="min-w-0">
+              <p className="whitespace-nowrap text-lg font-bold text-[#2f2119]">
+                Sarah Groomer
+              </p>
+              <p className="text-sm font-semibold text-[#806e62]">Staff</p>
+            </div>
+          </div>
+
+          <form action={logoutAction} className="mt-7">
+            <button
+              type="submit"
+              className="flex w-full items-center justify-center rounded-xl bg-[#c6532c] px-2 py-3 text-lg font-bold cursor-pointer text-[#fff0eb] hover:bg-[#8f3919] transition-colors"
+            >
+              <LogOut color="#ffffff" className="mr-3" />Logout
+            </button>
+          </form>
+        </div>
       </aside>
 
       <main className="w-full px-5 py-8 sm:px-8 lg:px-12 lg:py-11">
