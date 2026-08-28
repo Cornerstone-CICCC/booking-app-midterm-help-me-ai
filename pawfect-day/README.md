@@ -7,7 +7,7 @@
 
 ## 🔗 Live Deployment & Repository Links
 
-- **Live Application URL**: []()
+- **Live Application URL**: [Pawfect Day](https://pawfect-day-seven.vercel.app/)
 - **GitHub Repository**: [https://github.com/Cornerstone-CICCC/booking-app-midterm-help-me-ai](https://github.com/Cornerstone-CICCC/booking-app-midterm-help-me-ai)
 - **Database**: Hosted PostgreSQL instance on [Neon](https://neon.tech)
 
