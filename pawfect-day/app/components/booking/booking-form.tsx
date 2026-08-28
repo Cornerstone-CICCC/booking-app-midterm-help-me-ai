@@ -14,6 +14,11 @@ import type { PetSize, PetType, ServiceType } from "@/app/types/booking";
 
 import ProgressIndicator from "./progress-indicator";
 
+type BookedSlot = {
+  bookingDate: string;
+  bookingTime: string;
+};
+
 type Draft = {
   name: string;
   email: string;
@@ -64,7 +69,7 @@ function isValidPhoneNumber(value: string) {
   return PHONE_PATTERN.test(value) && digitCount >= 7 && digitCount <= 15;
 }
 
-export default function BookingForm() {
+export default function BookingForm({ bookedSlots }: { bookedSlots: BookedSlot[] }) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const requestedServiceName = searchParams.get("service");
@@ -148,7 +153,7 @@ export default function BookingForm() {
       <section className="mt-16 rounded-[28px] border border-warm-border bg-white px-7 py-14 sm:px-14 lg:px-[58px]">
         {step === 1 && <DetailsStep draft={draft} updateDraft={updateDraft} errors={detailsErrors} />}
         {step === 2 && <PetAndServiceStep draft={draft} updateDraft={updateDraft} />}
-        {step === 3 && <DateAndTimeStep draft={draft} updateDraft={updateDraft} />}
+        {step === 3 && <DateAndTimeStep draft={draft} updateDraft={updateDraft} bookedSlots={bookedSlots} />}
         {step === 4 && selectedService && (
           <ReviewStep draft={draft} service={selectedService} editStep={setStep} />
         )}
@@ -300,7 +305,7 @@ function PetAndServiceStep({ draft, updateDraft }: { draft: Draft; updateDraft: 
   );
 }
 
-function DateAndTimeStep({ draft, updateDraft }: { draft: Draft; updateDraft: UpdateDraft }) {
+function DateAndTimeStep({ draft, updateDraft, bookedSlots }: { draft: Draft; updateDraft: UpdateDraft; bookedSlots: BookedSlot[] }) {
   const [displayedMonth, setDisplayedMonth] = useState(
     () => new Date(new Date().getFullYear(), new Date().getMonth(), 1),
   );
@@ -317,6 +322,19 @@ function DateAndTimeStep({ draft, updateDraft }: { draft: Draft; updateDraft: Up
     );
   }
 
+  const bookedTimes = new Set(
+    bookedSlots
+      .filter((slot) => slot.bookingDate === draft.date)
+      .map((slot) => slot.bookingTime),
+  );
+  const morningTimes = APPOINTMENT_TIMES.slice(0, 2).filter(
+    (time) => !bookedTimes.has(time),
+  );
+  const afternoonTimes = APPOINTMENT_TIMES.slice(2).filter(
+    (time) => !bookedTimes.has(time),
+  );
+  const availableTimes = [...morningTimes, ...afternoonTimes];
+
   return (
     <>
       <h1 className="font-display text-4xl font-semibold">When should we welcome your pet?</h1>
@@ -327,22 +345,25 @@ function DateAndTimeStep({ draft, updateDraft }: { draft: Draft; updateDraft: Up
         selectedDate={draft.date}
         onSelectDate={chooseDate}
         onChangeMonth={changeMonth}
+        bookedSlots={bookedSlots}
       />
 
       {draft.date && (
         <div className="mt-7">
           <h2 className="text-lg font-semibold text-brown">Available times for <span className="text-terra">{formatBookingDate(draft.date)}</span></h2>
-          <TimeGroup label="Morning" times={APPOINTMENT_TIMES.slice(0, 2)} selected={draft.time} onSelect={(time) => updateDraft("time", time)} />
-          <TimeGroup label="Afternoon" times={APPOINTMENT_TIMES.slice(2)} selected={draft.time} onSelect={(time) => updateDraft("time", time)} />
+          {availableTimes.length > 0 ? <>
+            {morningTimes.length > 0 && <TimeGroup label="Morning" times={morningTimes} selected={draft.time} onSelect={(time) => updateDraft("time", time)} />}
+            {afternoonTimes.length > 0 && <TimeGroup label="Afternoon" times={afternoonTimes} selected={draft.time} onSelect={(time) => updateDraft("time", time)} />}
+          </> : <p className="mt-4 text-brown-mid">No appointment times are available on this date.</p>}
 
-          {draft.time && <AlternateTime selectedTime={draft.time} value={draft.alternateTime} onChange={(time) => updateDraft("alternateTime", time)} />}
+          {draft.time && <AlternateTime selectedTime={draft.time} availableTimes={availableTimes} value={draft.alternateTime} onChange={(time) => updateDraft("alternateTime", time)} />}
         </div>
       )}
     </>
   );
 }
 
-function Calendar({ month, selectedDate, onSelectDate, onChangeMonth }: { month: Date; selectedDate: string; onSelectDate: (date: string) => void; onChangeMonth: (offset: number) => void }) {
+function Calendar({ month, selectedDate, onSelectDate, onChangeMonth, bookedSlots }: { month: Date; selectedDate: string; onSelectDate: (date: string) => void; onChangeMonth: (offset: number) => void; bookedSlots: BookedSlot[] }) {
   const year = month.getFullYear();
   const monthIndex = month.getMonth();
   const days = Array.from(
@@ -355,6 +376,8 @@ function Calendar({ month, selectedDate, onSelectDate, onChangeMonth }: { month:
   );
   const today = new Date();
   today.setHours(0, 0, 0, 0);
+  const lastBookableDate = new Date(today);
+  lastBookableDate.setMonth(lastBookableDate.getMonth() + 3);
   const monthLabel = month.toLocaleDateString("en-US", {
     month: "long",
     year: "numeric",
@@ -372,7 +395,10 @@ function Calendar({ month, selectedDate, onSelectDate, onChangeMonth }: { month:
       {days.map((day) => {
         const date = `${year}-${String(monthIndex + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
         const dateValue = new Date(year, monthIndex, day);
-        const unavailable = dateValue < today;
+        const bookedTimes = bookedSlots
+          .filter((slot) => slot.bookingDate === date)
+          .map((slot) => slot.bookingTime);
+        const unavailable = dateValue < today || dateValue > lastBookableDate || APPOINTMENT_TIMES.every((time) => bookedTimes.includes(time));
         const selected = selectedDate === date;
         const isToday = dateValue.getTime() === today.getTime();
         const classes = selected ? "bg-terra text-white" : isToday ? "border border-terra text-terra" : unavailable ? "text-warm-border" : "text-brown";
@@ -387,8 +413,8 @@ function TimeGroup({ label, times, selected, onSelect }: { label: string; times:
   return <div className="mt-4"><p className="text-sm font-semibold uppercase tracking-wide text-brown-mid">{label}</p><div className="mt-2 flex flex-wrap gap-3">{times.map((time) => <button key={time} type="button" onClick={() => onSelect(time)} className={`rounded-xl border px-4 py-2 font-semibold ${selected === time ? "border-terra bg-terra text-white" : "border-warm-border bg-white text-brown"}`}>{time}</button>)}</div></div>;
 }
 
-function AlternateTime({ selectedTime, value, onChange }: { selectedTime: string; value: string; onChange: (time: string) => void }) {
-  const availableAlternatives = APPOINTMENT_TIMES.filter((time) => time !== selectedTime);
+function AlternateTime({ selectedTime, availableTimes, value, onChange }: { selectedTime: string; availableTimes: string[]; value: string; onChange: (time: string) => void }) {
+  const availableAlternatives = availableTimes.filter((time) => time !== selectedTime);
   return <div className="mt-8 border-t border-warm-border pt-6"><label htmlFor="alternate-time" className="block font-semibold text-brown">Alternate Time <span className="font-normal text-brown-mid">(optional)</span></label><p className="mt-1 text-sm text-brown-mid">In case your preferred time becomes unavailable, we&apos;ll try this slot next.</p><select id="alternate-time" value={value} onChange={(event) => onChange(event.target.value)} className="mt-3 w-full rounded-xl border border-warm-border bg-white px-5 py-3 font-medium text-brown focus-visible:outline-terra"><option value="">No alternate time</option>{availableAlternatives.map((time) => <option key={time} value={time}>{time}</option>)}</select></div>;
 }
 

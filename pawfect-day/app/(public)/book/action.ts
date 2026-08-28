@@ -23,6 +23,18 @@ function isValidPhoneNumber(value: string) {
 	return PHONE_PATTERN.test(value) && digitCount >= 7 && digitCount <= 15;
 }
 
+function isBookableDate(value: string) {
+	const date = new Date(`${value}T00:00:00`);
+	if (Number.isNaN(date.getTime())) return false;
+
+	const today = new Date();
+	today.setHours(0, 0, 0, 0);
+	const lastBookableDate = new Date(today);
+	lastBookableDate.setMonth(lastBookableDate.getMonth() + 3);
+
+	return date >= today && date <= lastBookableDate;
+}
+
 export async function createBooking(
 	_previousState: BookingFormState,
 	formData: FormData,
@@ -58,6 +70,8 @@ export async function createBooking(
 	if (!service || !isServiceType(service))
 		errors.service = "Choosing service is required.";
 	if (!bookingDate) errors.bookingDate = "Date is required.";
+	else if (!isBookableDate(bookingDate))
+		errors.bookingDate = "Choose a date from today through the next three months.";
 	if (!bookingTime) errors.bookingTime = "Time slot is required.";
 
 	if (Object.keys(errors).length > 0) {
@@ -119,6 +133,7 @@ export async function createBooking(
 		};
 	}
 
+	revalidatePath("/book");
 	revalidatePath("/dashboard");
 	redirect(`/book/success?ref=${referenceNumber}`);
 }

@@ -28,6 +28,11 @@ type BookingRow = {
 	updated_at: string | null;
 };
 
+export type BookedSlot = {
+	bookingDate: string;
+	bookingTime: string;
+};
+
 // Convert DB snake_case row -> TS camelCase
 function formatBooking(row: BookingRow): Booking {
 	let bookingDate = "";
@@ -115,6 +120,32 @@ export async function checkSlotAvailability(
 		[date, time],
 	);
 	return result.rows.length === 0;
+}
+
+/**
+ * GET booked time slots in a date range for the public booking form.
+ */
+export async function getBookedSlots(
+	startDate: string,
+	endDate: string,
+): Promise<BookedSlot[]> {
+	const result = await pool.query<{
+		booking_date: string | Date;
+		booking_time: string;
+	}>(
+		`SELECT booking_date, booking_time FROM bookings
+		 WHERE booking_date BETWEEN $1 AND $2
+		   AND status IN ('pending', 'confirmed')`,
+		[startDate, endDate],
+	);
+
+	return result.rows.map((slot) => ({
+		bookingDate:
+			slot.booking_date instanceof Date
+				? slot.booking_date.toISOString().slice(0, 10)
+				: String(slot.booking_date).slice(0, 10),
+		bookingTime: slot.booking_time,
+	}));
 }
 
 /**
