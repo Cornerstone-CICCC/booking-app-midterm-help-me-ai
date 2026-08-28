@@ -57,7 +57,7 @@ export const SERVICES_MASTER: Record<ServiceType, ServiceInfo> = {
     durationMinutes: 20,
     startingPrice: 20,
     imageUrl:
-      "https://images.unsplash.com/photo-1651273427958-bf78352e39be?w=600&h=300&fit=crop&auto=format",
+      "https://unsplash.com/photos/a-cats-white-paw-with-pink-toe-pads-tEmOgK2V5X0",
     icon: "🐾",
   },
   deshedding_treatment: {
@@ -69,7 +69,7 @@ export const SERVICES_MASTER: Record<ServiceType, ServiceInfo> = {
     durationMinutes: 75,
     startingPrice: 60,
     imageUrl:
-      "https://images.unsplash.com/photo-1588269845483-8e7f2398cca6?w=600&h=300&fit=crop&auto=format",
+      "https://images.unsplash.com/photo-1450778869180-41d0601e046e?w=900&h=1100&fit=crop&auto=format",
     icon: "🌿",
   },
   puppys_first_groom: {
@@ -106,8 +106,6 @@ export interface Booking {
   createdAt: string;
   updatedAt?: string;
 }
-
-
 
 export type CreateBookingInput = Omit<
   Booking,
