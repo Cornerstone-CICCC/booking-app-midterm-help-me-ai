@@ -96,7 +96,7 @@ export default function StatusModal({ booking, onClose }: StatusModalProps) {
 						type="button"
 						onClick={handleUpdate}
 						disabled={isPending}
-						className="rounded-xl bg-[#c6532c] px-4 py-2 text-sm font-semibold text-white hover:bg-[#b85d3d] disabled:opacity-50"
+						className="rounded-xl bg-terra px-4 py-2 text-sm font-semibold text-white hover:bg-[#b85d3d] disabled:opacity-50"
 					>
 						{isPending ? "Updating..." : "Update Status"}
 					</button>

@@ -173,7 +173,7 @@ export default function Home() {
 
       <section
         id="why_choose_us"
-        className="flex flex-row items-center gap-6 px-6 py-12 md:px-24 md:py-16 bg-cream"
+        className="flex flex-col md:flex-row lg:flex-row items-center gap-6 px-6 py-12 md:px-24 md:py-16 bg-cream"
       >
         <div className="flex flex-col gap-2 w-full">
           <p className="text-sm font-semibold uppercase tracking-widest text-terra">
@@ -238,8 +238,8 @@ export default function Home() {
       </section>
 
             <section className="bg-terra py-20 px-6">
-        <div className="max-w-2xl mx-auto text-center">
-          <h2 className="font-display text-4xl md:text-5xl font-semibold text-cream mb-4">
+        <div className="mx-auto text-center">
+          <h2 className="text-4xl md:text-5xl font-semibold text-cream mb-4">
             Ready to book your pet's spa day?
           </h2>
           <p className="text-cream/80 mb-8 text-lg">

@@ -120,7 +120,7 @@ export default function NavBar() {
             text-2xl
             text-brown
             transition-colors
-            hover:bg-warm-muted
+            hover:text-terra-dark
             md:hidden
           "
           aria-label={
