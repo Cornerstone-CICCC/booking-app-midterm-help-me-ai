@@ -1,4 +1,5 @@
-@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,100..900;1,9..144,100..900&family=Outfit:wght@100..900&display=swap');@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,100..900;1,9..144,100..900&family=Outfit:wght@100..900&display=swap');
+@import "tailwindcss";
 
 @theme {
   --color-cream: #faf6ef;
@@ -47,3 +48,17 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 
+.staff-avatar {
+  align-items: center !important;
+  background-color: #f5ddd4 !important;
+  border-radius: 50% !important;
+  color: #c6532c !important;
+  display: flex !important;
+  flex: 0 0 48px !important;
+  font-size: 18px !important;
+  font-weight: 700 !important;
+  height: 48px !important;
+  justify-content: center !important;
+  line-height: 1 !important;
+  width: 48px !important;
+}
