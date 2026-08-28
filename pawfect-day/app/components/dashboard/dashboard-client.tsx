@@ -164,12 +164,26 @@ export default function DashboardClient({ bookings }: Props) {
 
         <div className="mt-auto -mx-7 border-t border-[#e2d5c7] px-7 pt-7 md:-mx-8 md:px-8">
           <div className="flex items-center gap-4">
-            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[#f9ded6] text-lg font-bold text-[#c6532c]">
+            <div
+              aria-hidden="true"
+              className="staff-avatar flex shrink-0 items-center justify-center rounded-full text-lg font-bold"
+              style={{
+                aspectRatio: "1 / 1",
+                backgroundColor: "#f5ddd4",
+                borderRadius: "50%",
+                color: "#c6532c",
+                flexBasis: "48px",
+                height: "48px",
+                minHeight: "48px",
+                minWidth: "48px",
+                width: "48px",
+              }}
+            >
               S
             </div>
             <div className="min-w-0">
               <p className="whitespace-nowrap text-lg font-bold text-[#2f2119]">
-                Sarah Groomer
+                Sarah&nbsp;Groomer
               </p>
               <p className="text-sm font-semibold text-[#806e62]">Staff</p>
             </div>
