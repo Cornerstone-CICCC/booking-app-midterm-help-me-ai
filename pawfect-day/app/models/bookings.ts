@@ -218,7 +218,7 @@ export async function updateBooking(
          service = COALESCE($5, service),
          booking_date = COALESCE($6, booking_date),
          booking_time = COALESCE($7, booking_time),
-         notes = COALESCE($8, notes),
+         notes = $8,
          status = COALESCE($9, status),
          updated_at = CURRENT_TIMESTAMP
      WHERE id = $10
