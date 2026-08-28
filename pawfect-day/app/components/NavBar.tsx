@@ -80,7 +80,7 @@ export default function NavBar() {
           "
         >
           <span aria-hidden="true">🐾</span>
-          <span>Pawfect Day</span>
+          <h1 className="font-bold">Pawfect Day</h1>
         </Link>
 
         {/* Desktop navigation */}
