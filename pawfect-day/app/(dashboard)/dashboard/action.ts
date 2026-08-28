@@ -120,7 +120,7 @@ export async function updateBookingAction(id: string, formData: FormData) {
     return { success: false, errors, message: "Please fix the errors below." };
   }
 
-  const isAvailable = await db.checkSlotAvailability(bookingDate, bookingTime);
+  const isAvailable = await db.checkSlotAvailability(bookingDate, bookingTime, id);
 
   if (!isAvailable) {
     return {
@@ -146,5 +146,6 @@ export async function updateBookingAction(id: string, formData: FormData) {
 
   revalidatePath("/dashboard");
   revalidatePath(`/dashboard/bookings/${id}`);
+  revalidatePath(`/dashboard/bookings/${id}/edit`);
   return { success: true, message: "Booking updated successfully." };
 }

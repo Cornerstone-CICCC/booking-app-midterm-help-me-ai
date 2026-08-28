@@ -107,12 +107,14 @@ export async function getBookingByReferenceNumber(
 export async function checkSlotAvailability(
 	date: string,
 	time: string,
+	excludeBookingId?: string,
 ): Promise<boolean> {
 	const result = await pool.query<BookingRow>(
 		`SELECT id FROM bookings
 	     WHERE booking_date = $1 AND booking_time = $2 AND status IN ('pending', 'confirmed')
+		 AND ($3::uuid IS NULL OR id <> $3::uuid)
      LIMIT 1`,
-		[date, time],
+		[date, time, excludeBookingId || null],
 	);
 	return result.rows.length === 0;
 }
@@ -171,7 +173,7 @@ export async function updateBooking(
          service = COALESCE($5, service),
          booking_date = COALESCE($6, booking_date),
          booking_time = COALESCE($7, booking_time),
-         notes = COALESCE($8, notes),
+         notes = $8,
          status = COALESCE($9, status),
          updated_at = CURRENT_TIMESTAMP
      WHERE id = $10
