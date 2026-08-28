@@ -7,6 +7,7 @@ import type { Booking, BookingStatus, ServiceType } from "@/app/types/booking";
 import { SERVICES_MASTER } from "@/app/types/booking";
 import StatusModal from "@/app/components/dashboard/status-modal";
 import DeleteModal from "@/app/components/dashboard/delete-modal";
+import ButtonLink from "@/app/components/ui/ButtonLink";
 
 type Props = { booking: Booking };
 
@@ -24,16 +25,33 @@ const statusStyles: Record<BookingStatus, string> = {
 	cancelled: "bg-rose-100 text-rose-800 hover:bg-rose-200",
 };
 
+// function formatDate(value?: string | Date) {
+// 	if (!value) return "Not specified";
+
+// 	const str = typeof value === "string" ? value : value.toISOString();
+// 	const [year, month, day] = str.split("T")[0].split("-").map(Number);
+
+// 	if (!year || !month || !day) return String(value);
+// 	return new Intl.DateTimeFormat("en-US", {
+// 		month: "short",
+// 		day: "numeric",
+// 		year: "numeric",
+// 	}).format(new Date(year, month - 1, day));
+// }
+
+// format date only date, not time, in a human-readable format
 function formatDate(value?: string | Date) {
 	if (!value) return "Not specified";
-	const str = typeof value === "string" ? value : value.toISOString();
-	const [year, month, day] = str.split("T")[0].split("-").map(Number);
-	if (!year || !month || !day) return String(value);
+
+	const date = typeof value === "string" ? new Date(value) : value;
+
+	if (isNaN(date.getTime())) return String(value);
+
 	return new Intl.DateTimeFormat("en-US", {
 		month: "short",
 		day: "numeric",
 		year: "numeric",
-	}).format(new Date(year, month - 1, day));
+	}).format(date);
 }
 
 function StatusBadge({
@@ -80,15 +98,15 @@ export default function DetailsClient({ booking }: Props) {
 			)}
 
 			{/* Staff Sidebar */}
-			<aside className="flex w-full flex-col border-b border-[#e2d5c7] bg-[#f8f4ed] px-7 py-7 md:min-h-screen md:w-[298px] md:border-b-0 md:border-r md:px-8 md:py-8">
-				<div className="flex items-center gap-2 text-[22px] font-bold text-[#c6532c]">
+			<aside className="flex w-full flex-col border-b border-warm-border bg-cream px-7 py-7 md:min-h-screen md:w-[298px] md:border-b-0 md:border-r md:px-8 md:py-8">
+				<div className="flex items-center gap-2 text-[22px] font-bold text-terra">
 					<span className="text-xl">🐾</span>Pawfect Day
 				</div>
 				<div className="mt-10 text-xs font-semibold uppercase tracking-widest text-[#a29488]">
 					Staff Dashboard
 				</div>
 				<Link
-					className="mt-8 rounded-xl bg-[#fff0eb] px-4 py-4 text-sm font-bold text-[#c6532c]"
+					className="mt-8 rounded-xl bg-terra-faint px-4 py-4 text-sm font-bold text-terra"
 					href="/dashboard"
 				>
 					<span className="mr-3">▣</span>Bookings
@@ -103,7 +121,7 @@ export default function DetailsClient({ booking }: Props) {
 						<div>
 							<Link
 								href="/dashboard"
-								className="flex items-center gap-1.5 text-sm text-[#8f8075] hover:text-[#c6532c] transition-colors mb-3 font-semibold"
+								className="flex items-center gap-1.5 text-sm text-[#8f8075] hover:text-terra transition-colors mb-3 font-semibold"
 							>
 								<svg
 									className="w-4 h-4"
@@ -144,7 +162,7 @@ export default function DetailsClient({ booking }: Props) {
 							<button
 								type="button"
 								onClick={() => setStatusDialog(true)}
-								className="px-4 py-2 text-sm font-semibold text-white bg-[#c6532c] rounded-xl hover:bg-[#b85d3d] transition-colors cursor-pointer"
+								className="px-4 py-2 text-sm font-semibold text-white bg-terra rounded-xl hover:bg-[#b85d3d] transition-colors cursor-pointer"
 							>
 								Change Status
 							</button>
@@ -318,7 +336,7 @@ export default function DetailsClient({ booking }: Props) {
 								<button
 									type="button"
 									onClick={() => setStatusDialog(true)}
-									className="w-full flex items-center justify-center gap-2 py-2.5 text-sm font-semibold text-white bg-[#c6532c] rounded-xl hover:bg-[#b85d3d] transition-colors cursor-pointer"
+									className="w-full flex items-center justify-center gap-2 py-2.5 text-sm font-semibold text-white bg-terra rounded-xl hover:bg-[#b85d3d] transition-colors cursor-pointer"
 								>
 									Change Status
 								</button>

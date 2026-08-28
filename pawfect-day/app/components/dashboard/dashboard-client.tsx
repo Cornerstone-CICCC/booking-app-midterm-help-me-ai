@@ -148,24 +148,24 @@ export default function DashboardClient({ bookings }: Props) {
         onClose={() => setDeleteTarget(null)}
       />
 
-      <aside className="flex w-full flex-col border-b border-[#e2d5c7] bg-[#f8f4ed] px-7 py-7 md:min-h-screen md:w-74.5 md:border-b-0 md:border-r md:px-8 md:py-8">
-        <div className="flex items-center gap-2 text-[22px] font-bold text-[#c6532c]">
-          <span className="text-xl">🐾</span>Pawfect Day
+      <aside className="flex w-full flex-col border-b border-warm-muted bg-cream px-7 py-7 md:h-screen lg:h-screen md:w-74.5 md:border-b-0 md:border-r md:px-8 md:py-8 sticky top-0">
+        <div className="flex items-center gap-2 text-[22px] font-bold text-terra">
+          <h1 className="text-xl">🐾 Pawfect Day</h1>
         </div>
-        <div className="mt-10 text-xs font-semibold uppercase tracking-widest text-[#a29488]">
+        <div className="mt-10 text-xs font-semibold uppercase tracking-widest text-brown-mid">
           Staff Dashboard
         </div>
         <a
-          className="mt-8 rounded-xl bg-[#fff0eb] px-4 py-4 text-sm font-bold text-[#c6532c]"
+          className="mt-8 rounded-xl bg-terra-faint px-4 py-4 text-sm font-bold text-terra"
           href="/dashboard"
         >
-          <span className="mr-3">▣</span>Bookings
+          📖  Bookings
         </a>
 
         <form action={logoutAction} className="mt-auto w-full">
           <button
             type="submit"
-            className="flex w-full items-center justify-center rounded-xl bg-[#c6532c] px-2 py-3 text-lg font-bold cursor-pointer text-[#fff0eb] hover:bg-[#8f3919] transition-colors"
+            className="flex w-full items-center justify-center rounded-full bg-terra px-2 py-3 text-lg font-bold cursor-pointer text-terra-faint hover:bg-[#8f3919] transition-colors"
           >
             <LogOut color="#ffffff" className="mr-3" />Logout
           </button>
@@ -177,7 +177,7 @@ export default function DashboardClient({ bookings }: Props) {
           <h1 className="font-serif text-4xl font-bold tracking-tight sm:text-5xl">
             Bookings
           </h1>
-          <p className="mt-2 text-base text-[#8f8075]">
+          <p className="mt-2 text-base text-brown-mid">
             Manage all grooming appointments from here.
           </p>
         </header>
@@ -185,8 +185,8 @@ export default function DashboardClient({ bookings }: Props) {
         <section className="mt-10 grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
           {cards.map(([label, value], index) => (
             <div
-              className={`rounded-2xl border border-[#e2d5c7] px-6 py-6 ${
-                ["bg-white", "bg-[#fff2d9]", "bg-[#e1eee6]", "bg-[#fff0eb]"][
+              className={`rounded-2xl border border-warm-muted px-6 py-6 ${
+                ["bg-white", "bg-[#fff2d9]", "bg-[#e1eee6]", "bg-terra-faint"][
                   index
                 ]
               }`}

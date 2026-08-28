@@ -27,11 +27,11 @@ export default function Services() {
         id="services"
         className="flex flex-col gap-6 px-6 py-12 md:px-24 md:py-16"
       >
-        <CardService serviceId="bath_and_brush" href="" />
-        <CardService serviceId="full_groom" href="" />
-        <CardService serviceId="nail_trim" href="" />
-        <CardService serviceId="deshedding_treatment" href="" />
-        <CardService serviceId="puppys_first_groom" href="" />
+        <CardService serviceId="bath_and_brush" />
+        <CardService serviceId="full_groom" />
+        <CardService serviceId="nail_trim" />
+        <CardService serviceId="deshedding_treatment" />
+        <CardService serviceId="puppys_first_groom" />
       </section>
       <Footer />
     </main>

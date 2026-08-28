@@ -14,11 +14,16 @@ export default function ServiceCard({ serviceId }: ServiceCardProps) {
     <div
       className="
         flex
-        flex-row
+        flex-col
+        md:flex-row
+        lg:flex-row
         rounded-xl
         w-full
         bg-white
         overflow-hidden
+        border
+        border-warm-border
+      
       "
     >
       {/* Left side - Image */}
@@ -73,12 +78,12 @@ export default function ServiceCard({ serviceId }: ServiceCardProps) {
         </div>
 
         <ButtonLink
-          href={`/services/${serviceId}`}
+          href={`/book`}
           variant="primary"
           size="medium"
           className="mt-4 w-fit"
         >
-          Select This Service
+          Book This Service
         </ButtonLink>
       </div>
     </div>
