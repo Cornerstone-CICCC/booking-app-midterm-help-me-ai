@@ -12,6 +12,9 @@ import type {
 } from "@/app/types/booking";
 import { SERVICES_MASTER } from "@/app/types/booking";
 import { updateBookingAction } from "@/app/(dashboard)/dashboard/action";
+import InputField from "@/app/components/ui/InputField";
+import Dropdown from "@/app/components/ui/Dropdown";
+import Button from "@/app/components/ui/Button";
 
 type Props = { booking: Booking };
 
@@ -21,32 +24,33 @@ interface Toast {
 	type: "success" | "error";
 }
 
-const STATUSES: { value: BookingStatus; label: string; badgeCls: string }[] = [
-	{
-		value: "pending",
-		label: "Pending",
-		badgeCls: "bg-amber-100 text-amber-800",
-	},
-	{
-		value: "confirmed",
-		label: "Confirmed",
-		badgeCls: "bg-emerald-100 text-emerald-800",
-	},
-	{
-		value: "completed",
-		label: "Completed",
-		badgeCls: "bg-stone-200 text-stone-700",
-	},
-	{
-		value: "cancelled",
-		label: "Cancelled",
-		badgeCls: "bg-rose-100 text-rose-800",
-	},
-];
+const STATUSES: { value: BookingStatus; label: string; activeClass: string }[] =
+	[
+		{
+			value: "pending",
+			label: "Pending",
+			activeClass: "bg-amber-light text-amber border-amber",
+		},
+		{
+			value: "confirmed",
+			label: "Confirmed",
+			activeClass: "bg-sage-light text-sage border-sage",
+		},
+		{
+			value: "completed",
+			label: "Completed",
+			activeClass: "bg-warm-muted text-brown-mid border-warm-border",
+		},
+		{
+			value: "cancelled",
+			label: "Cancelled",
+			activeClass: "bg-terra-faint text-terra-dark border-terra",
+		},
+	];
 
-const PET_SIZES: PetSize[] = ["small", "medium", "large"];
-
-const AVAILABLE_TIMES = [
+const PET_TYPE_OPTIONS = ["Dog", "Cat"];
+const PET_SIZE_OPTIONS = ["Small", "Medium", "Large"];
+const TIME_OPTIONS = [
 	"9:00 AM",
 	"10:30 AM",
 	"12:00 PM",
@@ -54,40 +58,6 @@ const AVAILABLE_TIMES = [
 	"3:00 PM",
 	"4:30 PM",
 ];
-
-const Field = ({
-	id,
-	label,
-	error,
-	required,
-	children,
-}: {
-	id: string;
-	label: string;
-	error?: string;
-	required?: boolean;
-	children: React.ReactNode;
-}) => (
-	<div>
-		<label
-			htmlFor={id}
-			className="block text-sm font-semibold text-[#3d3028] mb-1.5"
-		>
-			{label}
-			{required && <span className="text-[#c6532c] ml-1">*</span>}
-		</label>
-		{children}
-		{error && (
-			<p className="mt-1.5 text-xs font-semibold text-rose-600">⚠ {error}</p>
-		)}
-	</div>
-);
-
-const inputCls = (err?: string) =>
-	`w-full px-4 py-3 rounded-xl border bg-[#fffdfa] text-sm text-[#3d3028] transition-colors outline-none
-     focus:ring-2 focus:ring-[#c6532c]/20 focus:border-[#c6532c]
-     ${err ? "border-rose-500 bg-rose-50/40" : "border-[#e8ded2] hover:border-[#b85d3d]"}`;
-
 export default function EditClient({ booking }: Props) {
 	const router = useRouter();
 	const [isPending, startTransition] = useTransition();
@@ -142,7 +112,7 @@ export default function EditClient({ booking }: Props) {
 
 		startTransition(async () => {
 			const res = await updateBookingAction(booking.id, formData);
-      
+
 			if (res.success) {
 				showToast("Booking updated successfully.", "success");
 				setTimeout(() => {
@@ -189,14 +159,14 @@ export default function EditClient({ booking }: Props) {
 				</Link>
 			</aside>
 
-			{/* Main Content */}
+			{/* Main Content Area */}
 			<main className="w-full px-5 py-8 sm:px-8 lg:px-12 lg:py-11">
 				<div className="max-w-3xl mx-auto">
 					{/* Header */}
 					<div className="mb-8">
 						<Link
 							href={`/dashboard/bookings/${booking.id}`}
-							className="flex items-center gap-1.5 text-sm text-[#8f8075] hover:text-[#c6532c] transition-colors mb-3 font-semibold"
+							className="flex items-center gap-1.5 text-sm text-brown-mid hover:text-terra transition-colors mb-3 font-semibold"
 						>
 							<svg
 								className="w-4 h-4"
@@ -211,155 +181,130 @@ export default function EditClient({ booking }: Props) {
 									d="M15 19l-7-7 7-7"
 								/>
 							</svg>
-							Back to {booking.petName}'s Booking
+							Back to {booking.petName}’s Booking
 						</Link>
-						<h1 className="font-serif text-3xl font-bold text-[#3d3028]">
+						<h1 className="font-serif text-3xl font-bold text-brown">
 							Edit Booking
 						</h1>
-						<p className="text-xs text-[#8f8075] mt-1 font-mono font-bold">
+						<p className="text-xs text-brown-mid mt-1 font-mono font-bold">
 							{booking.referenceNumber}
 						</p>
 					</div>
 
 					<div className="space-y-6">
 						{/* Owner Section */}
-						<div className="bg-white border border-[#e8ded2] rounded-2xl p-6 space-y-5 shadow-sm">
-							<h2 className="font-semibold text-[#a29488] text-xs uppercase tracking-wider">
+						<div className="bg-white border border-warm-border rounded-2xl p-6 shadow-sm">
+							<h2 className="font-semibold text-brown-mid text-xs uppercase tracking-wider mb-4">
 								Owner Information
 							</h2>
-							<Field
+							<InputField
 								id="customerName"
 								label="Full Name"
+								value={customerName}
+								onChange={(e) => setCustomerName(e.target.value)}
 								error={errors.customerName}
 								required
-							>
-								<input
-									id="customerName"
-									type="text"
-									value={customerName}
-									onChange={(e) => setCustomerName(e.target.value)}
-									className={inputCls(errors.customerName)}
-								/>
-							</Field>
+							/>
 							<div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-								<Field
+								<InputField
 									id="email"
 									label="Email Address"
+									type="email"
+									value={email}
+									onChange={(e) => setEmail(e.target.value)}
 									error={errors.email}
 									required
-								>
-									<input
-										id="email"
-										type="email"
-										value={email}
-										onChange={(e) => setEmail(e.target.value)}
-										className={inputCls(errors.email)}
-									/>
-								</Field>
-								<Field
+								/>
+								<InputField
 									id="phone"
 									label="Phone Number"
+									type="tel"
+									value={phone}
+									onChange={(e) => setPhone(e.target.value)}
 									error={errors.phone}
 									required
-								>
-									<input
-										id="phone"
-										type="tel"
-										value={phone}
-										onChange={(e) => setPhone(e.target.value)}
-										className={inputCls(errors.phone)}
-									/>
-								</Field>
+								/>
 							</div>
 						</div>
 
 						{/* Pet Section */}
-						<div className="bg-white border border-[#e8ded2] rounded-2xl p-6 space-y-5 shadow-sm">
-							<h2 className="font-semibold text-[#a29488] text-xs uppercase tracking-wider">
+						<div className="bg-white border border-warm-border rounded-2xl p-6 shadow-sm">
+							<h2 className="font-semibold text-brown-mid text-xs uppercase tracking-wider mb-4">
 								Pet Information
 							</h2>
 							<div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-								<Field
+								<InputField
 									id="petName"
 									label="Pet Name"
+									value={petName}
+									onChange={(e) => setPetName(e.target.value)}
 									error={errors.petName}
 									required
-								>
-									<input
-										id="petName"
-										type="text"
-										value={petName}
-										onChange={(e) => setPetName(e.target.value)}
-										className={inputCls(errors.petName)}
-									/>
-								</Field>
-								<Field id="petBreed" label="Breed">
-									<input
-										id="petBreed"
-										type="text"
-										value={petBreed}
-										onChange={(e) => setPetBreed(e.target.value)}
-										className={inputCls()}
-									/>
-								</Field>
+								/>
+								<InputField
+									id="petBreed"
+									label="Breed"
+									value={petBreed}
+									onChange={(e) => setPetBreed(e.target.value)}
+									placeholder="e.g. Shiba Inu"
+								/>
 							</div>
 
 							<div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-								<Field id="petType" label="Pet Type" required>
-									<select
-										id="petType"
-										value={petType}
-										onChange={(e) => setPetType(e.target.value as PetType)}
-										className={inputCls()}
-									>
-										<option value="dog">Dog</option>
-										<option value="cat">Cat</option>
-									</select>
-								</Field>
-								<Field id="petSize" label="Pet Size" required>
-									<select
-										id="petSize"
-										value={petSize}
-										onChange={(e) => setPetSize(e.target.value as PetSize)}
-										className={inputCls()}
-									>
-										{PET_SIZES.map((s) => (
-											<option key={s} value={s}>
-												{s.charAt(0).toUpperCase() + s.slice(1)}
-											</option>
-										))}
-									</select>
-								</Field>
+								<Dropdown
+									id="petType"
+									label="Pet Type"
+									options={PET_TYPE_OPTIONS}
+									value={petType}
+									onChange={(e) => setPetType(e.target.value as PetType)}
+									required
+								/>
+								<Dropdown
+									id="petSize"
+									label="Pet Size"
+									options={PET_SIZE_OPTIONS}
+									value={petSize}
+									onChange={(e) => setPetSize(e.target.value as PetSize)}
+									required
+								/>
 							</div>
 
-							<Field id="notes" label="Special Care Notes">
+							<div className="mt-2">
+								<label
+									htmlFor="notes"
+									className="block text-md font-semibold text-brown mb-1"
+								>
+									Special Care Notes
+								</label>
 								<textarea
 									id="notes"
 									value={notes}
 									onChange={(e) => setNotes(e.target.value)}
 									rows={3}
-									className={inputCls()}
 									placeholder="Allergies, sensitivities, coat conditions..."
+									className="w-full rounded-md border border-warm-border bg-white px-3 py-2 text-md text-brown hover:border-brown focus-visible:outline-terra focus-visible:ring-2 focus-visible:ring-terra-light focus-visible:ring-offset-0"
 								/>
-							</Field>
+							</div>
 						</div>
 
 						{/* Service & Status Section */}
-						<div className="bg-white border border-[#e8ded2] rounded-2xl p-6 space-y-5 shadow-sm">
-							<h2 className="font-semibold text-[#a29488] text-xs uppercase tracking-wider">
+						<div className="bg-white border border-warm-border rounded-2xl p-6 shadow-sm">
+							<h2 className="font-semibold text-brown-mid text-xs uppercase tracking-wider mb-4">
 								Service & Status
 							</h2>
-							<Field
-								id="service"
-								label="Grooming Service"
-								error={errors.service}
-								required
-							>
+
+							<div className="mb-4">
+								<label
+									htmlFor="service"
+									className="block text-md font-semibold text-brown mb-1"
+								>
+									Grooming Service <span className="text-red-500">*</span>
+								</label>
 								<select
 									id="service"
 									value={service}
 									onChange={(e) => setService(e.target.value as ServiceType)}
-									className={inputCls(errors.service)}
+									className="w-full rounded-md border border-warm-border bg-white px-3 py-2 text-md text-brown hover:border-brown focus-visible:outline-terra focus-visible:ring-2 focus-visible:ring-terra-light focus-visible:ring-offset-0"
 								>
 									{Object.entries(SERVICES_MASTER).map(([val, info]) => (
 										<option key={val} value={val}>
@@ -368,10 +313,13 @@ export default function EditClient({ booking }: Props) {
 										</option>
 									))}
 								</select>
-							</Field>
+								{errors.service && (
+									<p className="mt-1 text-xs text-red-500">{errors.service}</p>
+								)}
+							</div>
 
 							<div>
-								<p className="text-sm font-semibold text-[#3d3028] mb-2">
+								<p className="block text-md font-semibold text-brown mb-2">
 									Booking Status
 								</p>
 								<div className="flex flex-wrap gap-2">
@@ -380,10 +328,10 @@ export default function EditClient({ booking }: Props) {
 											key={s.value}
 											type="button"
 											onClick={() => setStatus(s.value)}
-											className={`px-4 py-2 rounded-xl border transition-all cursor-pointer font-semibold text-xs ${
+											className={`px-4 py-2 rounded-xl border text-sm font-semibold transition-all cursor-pointer ${
 												status === s.value
-													? `${s.badgeCls} border-current ring-2 ring-current/20`
-													: "border-[#e2d5c7] bg-[#f8f4ed] text-[#806e62] hover:border-[#b85d3d]"
+													? `${s.activeClass} ring-2 ring-terra/20`
+													: "border-warm-border bg-white text-brown-mid hover:border-terra/50"
 											}`}
 										>
 											{s.label}
@@ -394,106 +342,60 @@ export default function EditClient({ booking }: Props) {
 						</div>
 
 						{/* Date & Time Section */}
-						<div className="bg-white border border-[#e8ded2] rounded-2xl p-6 space-y-5 shadow-sm">
-							<h2 className="font-semibold text-[#a29488] text-xs uppercase tracking-wider">
+						<div className="bg-white border border-warm-border rounded-2xl p-6 shadow-sm">
+							<h2 className="font-semibold text-brown-mid text-xs uppercase tracking-wider mb-4">
 								Date & Time
 							</h2>
 
 							<div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-								<Field
+								<InputField
 									id="bookingDate"
 									label="Appointment Date"
+									type="date"
+									value={bookingDate}
+									onChange={(e) => setBookingDate(e.target.value)}
 									error={errors.bookingDate}
 									required
-								>
-									<input
-										id="bookingDate"
-										type="date"
-										value={bookingDate}
-										onChange={(e) => setBookingDate(e.target.value)}
-										className={inputCls(errors.bookingDate)}
-									/>
-								</Field>
-
-								<Field
+								/>
+								<Dropdown
 									id="bookingTime"
-									label="Appointment Time Slot"
+									label="Appointment Time"
+									options={TIME_OPTIONS}
+									value={bookingTime}
+									onChange={(e) => setBookingTime(e.target.value)}
 									error={errors.bookingTime}
 									required
-								>
-									<select
-										id="bookingTime"
-										value={bookingTime}
-										onChange={(e) => setBookingTime(e.target.value)}
-										className={inputCls(errors.bookingTime)}
-									>
-										{AVAILABLE_TIMES.map((time) => (
-											<option key={time} value={time}>
-												{time}
-											</option>
-										))}
-									</select>
-								</Field>
+								/>
 							</div>
 
-							<Field id="alternateTime" label="Alternate Time (Optional)">
-								<select
-									id="alternateTime"
-									value={alternateTime}
-									onChange={(e) => setAlternateTime(e.target.value)}
-									className={inputCls()}
-								>
-									<option value="">None</option>
-									{AVAILABLE_TIMES.filter((t) => t !== bookingTime).map((t) => (
-										<option key={t} value={t}>
-											{t}
-										</option>
-									))}
-								</select>
-							</Field>
+							<Dropdown
+								id="alternateTime"
+								label="Alternate Time (Optional)"
+								options={[
+									"None",
+									...TIME_OPTIONS.filter((t) => t !== bookingTime),
+								]}
+								value={alternateTime || "None"}
+								onChange={(e) =>
+									setAlternateTime(
+										e.target.value === "None" ? "" : e.target.value,
+									)
+								}
+							/>
 						</div>
 
-						{/* Actions */}
+						{/* Action Buttons */}
 						<div className="flex gap-3 justify-end pt-2">
-							<Link
-								href={`/dashboard/bookings/${booking.id}`}
-								className="px-6 py-3 text-sm font-semibold text-[#806e62] border border-[#e2d5c7] rounded-xl hover:bg-stone-50 transition-colors"
-							>
-								Cancel
+							<Link href={`/dashboard/bookings/${booking.id}`}>
+								<Button variant="secondary">Cancel</Button>
 							</Link>
-							<button
-								type="button"
+							<Button
+								variant="primary"
 								onClick={handleSave}
 								disabled={isPending}
-								className="px-8 py-3 text-sm font-semibold text-white bg-[#c6532c] rounded-xl hover:bg-[#b85d3d] transition-colors disabled:opacity-60 flex items-center gap-2 cursor-pointer shadow-sm"
 							>
-								{isPending ? (
-									<>
-										<svg
-											className="animate-spin size-4"
-											viewBox="0 0 24 24"
-											fill="none"
-										>
-											<circle
-												className="opacity-25"
-												cx="12"
-												cy="12"
-												r="10"
-												stroke="currentColor"
-												strokeWidth="4"
-											/>
-											<path
-												className="opacity-75"
-												fill="currentColor"
-												d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
-											/>
-										</svg>
-										Saving...
-									</>
-								) : (
-									"Save Changes"
-								)}
-							</button>
+								{isPending ? "Saving..." : "Save Changes"}
+							</Button>
 						</div>
 					</div>
 				</div>
