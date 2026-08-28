@@ -1,30 +1,35 @@
 import type { SelectHTMLAttributes } from "react";
 
 interface DropdownProps extends SelectHTMLAttributes<HTMLSelectElement> {
-  label: string;
-  options: string[];
-  placeholder?: string;
+	label: string;
+	options: string[];
+	placeholder?: string;
+	error?: string;
 }
 
 export default function Dropdown({
-  label,
-  options,
-  placeholder = "Select an option",
-  id,
-  className = "",
-  ...selectProps
+	label,
+	options,
+	placeholder = "Select an option",
+	error = "",
+	id,
+	className = "",
+	...selectProps
 }: DropdownProps) {
-  const selectId = id ?? selectProps.name;
-  return (
-    <div className="mb-4">
-      <label htmlFor={selectId} className="mb-1 block text-base
-       font-semibold text-brown">
-        {label}
-      </label>
+	const selectId = id ?? selectProps.name;
+	return (
+		<div className="mb-4">
+			<label
+				htmlFor={selectId}
+				className="mb-1 block text-base
+       font-semibold text-brown"
+			>
+				{label}
+			</label>
 
-      <select
-        id={selectId}
-        className={`
+			<select
+				id={selectId}
+				className={`
           w-full
           rounded-md
           border
@@ -41,19 +46,20 @@ export default function Dropdown({
           focus-visible:ring-offset-0
           ${className}
         `}
-        required={selectProps.required}
-        {...selectProps}
-      >
-        <option value="" disabled>
-          {placeholder}
-        </option>
+				required={selectProps.required}
+				{...selectProps}
+			>
+				<option value="" disabled>
+					{placeholder}
+				</option>
 
-        {options.map((option) => (
-          <option key={option} value={option}>
-            {option}
-          </option>
-        ))}
-      </select>
-    </div>
-  );
+				{options.map((option) => (
+					<option key={option} value={option}>
+						{option}
+					</option>
+				))}
+			</select>
+			{error && <p className="mt-1 text-xs text-red-500">{error}</p>}
+		</div>
+	);
 }

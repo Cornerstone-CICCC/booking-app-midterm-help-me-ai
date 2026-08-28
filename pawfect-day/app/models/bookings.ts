@@ -112,14 +112,30 @@ export async function getBookingByReferenceNumber(
 export async function checkSlotAvailability(
 	date: string,
 	time: string,
+  excludeBookingId?: string
 ): Promise<boolean> {
-	const result = await pool.query<BookingRow>(
-		`SELECT id FROM bookings
-	     WHERE booking_date = $1 AND booking_time = $2 AND status IN ('pending', 'confirmed')
+	if (excludeBookingId) {
+    const result = await pool.query<BookingRow>(
+      `SELECT id FROM bookings
+       WHERE booking_date = $1 
+         AND booking_time = $2 
+         AND status IN ('pending', 'confirmed')
+         AND id != $3
+       LIMIT 1`,
+      [date, time, excludeBookingId]
+    );
+    return result.rows.length === 0;
+  }
+
+  const result = await pool.query<BookingRow>(
+    `SELECT id FROM bookings
+     WHERE booking_date = $1 
+       AND booking_time = $2 
+       AND status IN ('pending', 'confirmed')
      LIMIT 1`,
-		[date, time],
-	);
-	return result.rows.length === 0;
+    [date, time]
+  );
+  return result.rows.length === 0;
 }
 
 /**
