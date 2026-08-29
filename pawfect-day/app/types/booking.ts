@@ -57,7 +57,7 @@ export const SERVICES_MASTER: Record<ServiceType, ServiceInfo> = {
     durationMinutes: 20,
     startingPrice: 20,
     imageUrl:
-      "https://images.unsplash.com/photo-1651273427958-bf78352e39be?w=600&h=300&fit=crop&auto=format",
+      "https://images.unsplash.com/photo-1689029593266-3279de85f7db?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8Y2F0JTIwbmFpbHxlbnwwfHwwfHx8Mg%3D%3D",
     icon: "🐾",
   },
   deshedding_treatment: {

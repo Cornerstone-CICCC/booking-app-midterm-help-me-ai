@@ -106,7 +106,7 @@ export default function Home() {
         {/* Image */}
         <div className="relative overflow-hidden w-full">
           <img
-            src="https://images.unsplash.com/photo-1611173622933-91942d394b04?w=800&h=1000&fit=crop&auto=format"
+            src="https://images.unsplash.com/photo-1450778869180-41d0601e046e?w=900&h=1100&fit=crop&auto=format"
             alt="Pink dog with a bow"
             className="w-full object-cover opacity-85 md:h-[400px] lg:h-screen"
           />
@@ -202,12 +202,12 @@ export default function Home() {
 
 <div className="grid grid-cols-2 gap-4 w-full">
             <img
-            src="https://images.unsplash.com/photo-1528846104175-4fd300ee59da?w=600&h=400&fit=crop&auto=format"
+            src="https://images.unsplash.com/photo-1611173622933-91942d394b04?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8ZG9nJTIwaGFpcnxlbnwwfHwwfHx8Mg%3D%3D"
             alt="Dog getting a bath"
             className="rounded-2xl object-cover w-full h-64 col-span-1"
           />
            <img
-            src="https://images.unsplash.com/photo-1583987303344-1f553edc7f11?w=600&h=400&fit=crop&auto=format"
+            src="https://images.unsplash.com/photo-1561572166-395bebfb048f?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OHx8Y2F0JTIwbmFpbHxlbnwwfHwwfHx8Mg%3D%3D"
             alt="Dog getting a bath"
             className="rounded-2xl object-cover w-full h-64 col-span-1 mt-8"
           />
