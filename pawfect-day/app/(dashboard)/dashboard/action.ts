@@ -13,8 +13,18 @@ import {
  * Check authentication on server mutations
  */
 async function verifyStaffSession(): Promise<boolean> {
+<<<<<<< HEAD
 	const session = await verifySession();
 	return Boolean(session?.userId);
+=======
+	const cookieStore = await cookies();
+	const session =
+		cookieStore.get("staff_session") ||
+		cookieStore.get("auth_token") ||
+		cookieStore.get("session_token") ||
+		cookieStore.get("user");
+	return Boolean(session?.value);
+>>>>>>> b6ffdf49abc2533a994c429a04a4eb8b22931edd
 }
 
 const isServiceType = (val: string): val is ServiceType => {
@@ -89,6 +99,7 @@ export async function updateBookingAction(id: string, formData: FormData) {
 	}
 
 	// Extract Data
+
 	const customerName = String(formData.get("customerName") || "").trim();
 	const email = String(formData.get("email") || "").trim();
 	const phone = String(formData.get("phone") || "").trim();
@@ -115,7 +126,11 @@ export async function updateBookingAction(id: string, formData: FormData) {
 		return { success: false, errors, message: "Please fix the errors below." };
 	}
 
-	const isAvailable = await db.checkSlotAvailability(bookingDate, bookingTime);
+	const isAvailable = await db.checkSlotAvailability(
+		bookingDate,
+		bookingTime,
+		id,
+	);
 
 	if (!isAvailable) {
 		return {

@@ -3,9 +3,8 @@ import Link from "next/link";
 export default function Footer() {
   return (
     <footer 
-    className="bg-brown py-[64px] px-[24px] 
-    md:px-[48px] lg:px-[96px]">
-      <div className="grid grid-cols-4 gap-4">
+    className="bg-brown px-6 py-12 md:px-24 md:py-16">
+      <div className="grid md:grid-cols-4 gap-4 max-w-6xl mx-auto">
         <div className="col-span-2">
           <div
             className="
@@ -21,7 +20,7 @@ export default function Footer() {
             <span aria-hidden="true">🐾</span>
             <span>Pawfect Day</span>
           </div>
-          <p className="text-cream/70">
+          <p className="text-cream/70 max-w-[400px] mt-4 text-sm">
             A warm, professional grooming salon where every pet is treated with
             care, patience and love.
           </p>

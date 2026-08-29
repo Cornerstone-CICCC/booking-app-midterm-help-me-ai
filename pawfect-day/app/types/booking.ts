@@ -107,6 +107,8 @@ export interface Booking {
   updatedAt?: string;
 }
 
+
+
 export type CreateBookingInput = Omit<
   Booking,
   | "id"

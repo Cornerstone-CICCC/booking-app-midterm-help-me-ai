@@ -2,7 +2,7 @@
 
 import { redirect } from "next/navigation";
 import pool from "@/app/lib/db";
-import { createSession } from "@/app/lib/auth";
+import { createSession, destroySession } from "@/app/lib/auth";
 import { User, LoginCredentials } from "@/app/types/user";
 import bcrypt from "bcryptjs";
 
@@ -70,4 +70,9 @@ export async function loginAction(
   }
 
   redirect("/dashboard");
+}
+
+export async function logoutAction() {
+  await destroySession();
+  redirect('/login');
 }

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { EditBookingForm } from '@/app/components/dashboard/edit-booking-form';
@@ -18,3 +19,23 @@ export default async function EditBookingPage({ params }: { params: Promise<{ id
     </main>
   );
 }
+=======
+import { notFound } from "next/navigation";
+import { getBookingById } from "@/app/models/bookings";
+import EditClient from "./edit-client";
+
+interface PageProps {
+	params: Promise<{ id: string }>;
+}
+
+export default async function EditBookingPage({ params }: PageProps) {
+	const resolvedParams = await params;
+	const booking = await getBookingById(resolvedParams.id);
+
+	if (!booking) {
+		notFound();
+	}
+
+	return <EditClient booking={booking} />;
+}
+>>>>>>> b6ffdf49abc2533a994c429a04a4eb8b22931edd

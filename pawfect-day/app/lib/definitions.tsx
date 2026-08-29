@@ -7,7 +7,7 @@ import { SERVICES_MASTER, type ServiceInfo } from "@/app/types/booking";
 
 // Compatibility view for public booking and services pages.
 // The database layer uses `SERVICES_MASTER` as its source of truth.
-export type Service = ServiceInfo & {
+export type Service = Omit<ServiceInfo, 'includes'> & {
   price: number;
   includes: string[];
 };

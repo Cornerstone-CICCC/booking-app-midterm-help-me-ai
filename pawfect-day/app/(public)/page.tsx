@@ -8,7 +8,6 @@ import Button from "../components/ui/Button";
 import CardHome from "../components/ui/CardHome";
 import Link from "next/link";
 import Testimonial from "../components/ui/Testimonial";
-import Modal from "../components/ui/ChangeStatusModal";
 
 type processStep = {
   stepNumber: number;
@@ -164,17 +163,17 @@ export default function Home() {
           </Link>
         </div>
         <div className="grid items-stretch grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
-          <CardHome serviceId="bath_and_brush" href="" />
-          <CardHome serviceId="full_groom" href="" />
-          <CardHome serviceId="nail_trim" href="" />
-          <CardHome serviceId="deshedding_treatment" href="" />
+          <CardHome serviceId="bath_and_brush" />
+          <CardHome serviceId="full_groom" />
+          <CardHome serviceId="nail_trim" />
+          <CardHome serviceId="deshedding_treatment" />
         </div>
       </section>
     
 
       <section
         id="why_choose_us"
-        className="flex flex-row items-center gap-6 px-6 py-12 md:px-24 md:py-16 bg-cream"
+        className="flex flex-col md:flex-row lg:flex-row items-center gap-6 px-6 py-12 md:px-24 md:py-16 bg-cream"
       >
         <div className="flex flex-col gap-2 w-full">
           <p className="text-sm font-semibold uppercase tracking-widest text-terra">
@@ -222,7 +221,7 @@ export default function Home() {
         id="services"
         className="flex flex-col gap-6 px-6 py-12 md:px-24 md:py-16 bg-brown"
       >
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-2 items-center justify-center col-span-4">
           <p className="text-sm font-semibold uppercase tracking-widest text-cream">
             Happy customers
           </p>
@@ -239,8 +238,8 @@ export default function Home() {
       </section>
 
             <section className="bg-terra py-20 px-6">
-        <div className="max-w-2xl mx-auto text-center">
-          <h2 className="font-display text-4xl md:text-5xl font-semibold text-cream mb-4">
+        <div className="mx-auto text-center">
+          <h2 className="text-4xl md:text-5xl font-semibold text-cream mb-4">
             Ready to book your pet's spa day?
           </h2>
           <p className="text-cream/80 mb-8 text-lg">

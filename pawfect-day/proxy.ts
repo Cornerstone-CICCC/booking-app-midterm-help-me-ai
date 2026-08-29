@@ -1,4 +1,3 @@
-// TODO FIX AND COMPLETE
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { jwtVerify } from 'jose';
@@ -7,11 +6,12 @@ const JWT_SECRET = new TextEncoder().encode(
   process.env.JWT_SECRET || 'pawfect-day-jwt-secret-key-production-301'
 );
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const sessionToken = request.cookies.get('staff_session')?.value;
 
-  const isDashboardRoute = pathname.startsWith('/dashboard');
+  // Protege /dashboard y cualquier subruta (/dashboard/bookings/[id], /dashboard/bookings/[id]/edit)
+  const isProtectedRoute = pathname.startsWith('/dashboard');
   const isLoginRoute = pathname === '/login';
 
   let isAuthenticated = false;
@@ -25,8 +25,10 @@ export async function middleware(request: NextRequest) {
     }
   }
 
-  if (isDashboardRoute && !isAuthenticated) {
-    return NextResponse.redirect(new URL('/login', request.url));
+  if (isProtectedRoute && !isAuthenticated) {
+    const loginUrl = new URL('/login', request.url);
+    loginUrl.searchParams.set('redirectTo', pathname);
+    return NextResponse.redirect(loginUrl);
   }
 
   if (isLoginRoute && isAuthenticated) {
@@ -37,5 +39,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/dashboard/:path*', '/login'],
+  matcher: ['/dashboard', '/dashboard/:path*', '/login'],
 };
