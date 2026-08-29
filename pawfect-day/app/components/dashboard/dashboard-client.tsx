@@ -2,13 +2,14 @@
 
 import { useMemo, useState } from "react";
 import type { Booking, BookingStatus, ServiceType } from "@/app/types/booking";
+import type { User } from "@/app/types/user";
 import { SERVICES_MASTER } from "@/app/types/booking";
 import StatusModal from "./status-modal";
 import DeleteModal from "./delete-modal";
 import { logoutAction } from "@/app/lib/actions";
 import { LogOut } from "lucide-react";
 
-type Props = { bookings: Booking[] };
+type Props = { bookings: Booking[], user: User | null };
 
 const statusLabels: Record<BookingStatus, string> = {
   pending: "Pending",
@@ -72,7 +73,7 @@ function StatusBadge({
   );
 }
 
-export default function DashboardClient({ bookings }: Props) {
+export default function DashboardClient({ bookings, user }: Props) {
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState("");
   const [service, setService] = useState("");
@@ -183,9 +184,9 @@ export default function DashboardClient({ bookings }: Props) {
             </div>
             <div className="min-w-0">
               <p className="whitespace-nowrap text-lg font-bold text-[#2f2119]">
-                Sarah&nbsp;Groomer
+                {user?.name || "Staff Member"}
               </p>
-              <p className="text-sm font-semibold text-[#806e62]">Staff</p>
+              <p className="text-sm font-semibold text-[#806e62]">{user?.role }</p>
             </div>
           </div>
 

@@ -85,3 +85,24 @@ export async function destroySession() {
   const cookieStore = await cookies();
   cookieStore.delete('staff_session');
 }
+
+/** 
+ * @function getCurrentUserId
+ * @desc Retrieves the current user's ID from the session cookie
+ * @returns {Promise<string | null>} - Returns the user ID if the session is valid, or null if invalid
+ */
+export async function getCurrentUserId(): Promise<string | null> {
+  const cookieStore = await cookies();
+  const sessionToken = cookieStore.get('staff_session')?.value;
+
+  if (!sessionToken) {
+    return null;
+  }
+
+  try {
+    const { payload } = await jwtVerify(sessionToken, JWT_SECRET);
+    return (payload.userId as string) || (payload.sub as string) || null;
+  } catch {
+    return null;
+  }
+}
