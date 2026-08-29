@@ -13,18 +13,8 @@ import {
  * Check authentication on server mutations
  */
 async function verifyStaffSession(): Promise<boolean> {
-<<<<<<< HEAD
 	const session = await verifySession();
 	return Boolean(session?.userId);
-=======
-	const cookieStore = await cookies();
-	const session =
-		cookieStore.get("staff_session") ||
-		cookieStore.get("auth_token") ||
-		cookieStore.get("session_token") ||
-		cookieStore.get("user");
-	return Boolean(session?.value);
->>>>>>> b6ffdf49abc2533a994c429a04a4eb8b22931edd
 }
 
 const isServiceType = (val: string): val is ServiceType => {

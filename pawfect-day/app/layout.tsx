@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Fraunces, Outfit } from "next/font/google";
 import "./globals.css";
+import PinkEasterEgg from "./components/PinkEasterEgg";
 
 const outfit = Outfit({
   subsets: ["latin"],
@@ -29,7 +30,10 @@ export default function RootLayout({
       lang="en"
       className={`${outfit.variable} ${fraunces.variable}`}
     >
-      <body>{children}</body>
+      <body>
+        {children}
+        <PinkEasterEgg />
+      </body>
     </html>
   );
 }
