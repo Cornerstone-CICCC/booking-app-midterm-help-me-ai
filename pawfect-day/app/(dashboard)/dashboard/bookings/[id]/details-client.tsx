@@ -4,12 +4,14 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import type { Booking, BookingStatus, ServiceType } from "@/app/types/booking";
+import { User } from "@/app/types/user";
 import { SERVICES_MASTER } from "@/app/types/booking";
 import StatusModal from "@/app/components/dashboard/status-modal";
 import DeleteModal from "@/app/components/dashboard/delete-modal";
-import ButtonLink from "@/app/components/ui/ButtonLink";
 
-type Props = { booking: Booking };
+import Sidebar from "@/app/components/Sidebar";
+
+type Props = { booking: Booking, user: User | null };
 
 const statusLabels: Record<BookingStatus, string> = {
 	pending: "Pending",
@@ -24,20 +26,6 @@ const statusStyles: Record<BookingStatus, string> = {
 	completed: "bg-stone-200 text-stone-700 hover:bg-stone-300",
 	cancelled: "bg-rose-100 text-rose-800 hover:bg-rose-200",
 };
-
-// function formatDate(value?: string | Date) {
-// 	if (!value) return "Not specified";
-
-// 	const str = typeof value === "string" ? value : value.toISOString();
-// 	const [year, month, day] = str.split("T")[0].split("-").map(Number);
-
-// 	if (!year || !month || !day) return String(value);
-// 	return new Intl.DateTimeFormat("en-US", {
-// 		month: "short",
-// 		day: "numeric",
-// 		year: "numeric",
-// 	}).format(new Date(year, month - 1, day));
-// }
 
 // format date only date, not time, in a human-readable format
 function formatDate(value?: string | Date) {
@@ -74,7 +62,7 @@ function StatusBadge({
 	);
 }
 
-export default function DetailsClient({ booking }: Props) {
+export default function DetailsClient({ booking, user }: Props) {
 	const router = useRouter();
 	const [statusDialog, setStatusDialog] = useState(false);
 	const [deleteDialog, setDeleteDialog] = useState(false);
@@ -98,20 +86,7 @@ export default function DetailsClient({ booking }: Props) {
 			)}
 
 			{/* Staff Sidebar */}
-			<aside className="flex w-full flex-col border-b border-warm-border bg-cream px-7 py-7 md:min-h-screen md:w-[298px] md:border-b-0 md:border-r md:px-8 md:py-8">
-				<div className="flex items-center gap-2 text-[22px] font-bold text-terra">
-					<span className="text-xl">🐾</span>Pawfect Day
-				</div>
-				<div className="mt-10 text-xs font-semibold uppercase tracking-widest text-[#a29488]">
-					Staff Dashboard
-				</div>
-				<Link
-					className="mt-8 rounded-xl bg-terra-faint px-4 py-4 text-sm font-bold text-terra"
-					href="/dashboard"
-				>
-					<span className="mr-3">▣</span>Bookings
-				</Link>
-			</aside>
+			<Sidebar user={user} />
 
 			{/* Main Content Area */}
 			<main className="w-full px-5 py-8 sm:px-8 lg:px-12 lg:py-11">
@@ -152,7 +127,7 @@ export default function DetailsClient({ booking }: Props) {
 							</p>
 						</div>
 
-						<div className="flex items-center gap-2 flex-shrink-0">
+						<div className="flex items-center gap-2 shrink-0">
 							<Link
 								href={`/dashboard/bookings/${booking.id}/edit`}
 								className="px-4 py-2 text-sm font-semibold text-[#3d3028] border border-[#e2d5c7] bg-white rounded-xl hover:bg-stone-50 transition-colors"
@@ -184,7 +159,7 @@ export default function DetailsClient({ booking }: Props) {
 										{ label: "Phone", value: booking.phone },
 									].map(({ label, value }) => (
 										<div key={label} className="flex gap-4">
-											<dt className="text-xs text-[#8f8075] w-24 flex-shrink-0 pt-0.5">
+											<dt className="text-xs text-[#8f8075] w-24 shrink-0 pt-0.5">
 												{label}
 											</dt>
 											<dd className="text-sm text-[#3d3028] font-medium">
@@ -217,7 +192,7 @@ export default function DetailsClient({ booking }: Props) {
 										},
 									].map(({ label, value }) => (
 										<div key={label} className="flex gap-4">
-											<dt className="text-xs text-[#8f8075] w-24 flex-shrink-0 pt-0.5">
+											<dt className="text-xs text-[#8f8075] w-24 shrink-0 pt-0.5">
 												{label}
 											</dt>
 											<dd className="text-sm text-[#3d3028] font-medium">
@@ -261,7 +236,7 @@ export default function DetailsClient({ booking }: Props) {
 											: []),
 									].map(({ label, value }) => (
 										<div key={label} className="flex gap-4">
-											<dt className="text-xs text-[#8f8075] w-24 flex-shrink-0 pt-0.5">
+											<dt className="text-xs text-[#8f8075] w-24 shrink-0 pt-0.5">
 												{label}
 											</dt>
 											<dd className="text-sm text-[#3d3028] font-medium">

@@ -1,5 +1,5 @@
 import pool from "@/app/lib/db";
-import { User, UserRole } from "@/app/types/user";
+import { User } from "@/app/types/user";
 
 export async function getUserByEmail(email: string): Promise<User | null> {
   const query = "SELECT * FROM users WHERE email = $1";
