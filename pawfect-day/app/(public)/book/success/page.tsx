@@ -21,7 +21,7 @@ export default async function BookingSuccessPage({
   return (
     <main className="min-h-screen bg-cream px-6 py-12">
       <div className="mx-auto max-w-[576px] text-center">
-        <ConfirmationAvatar />
+        <ConfirmationAvatar petType={booking?.petType} />
 
         <h1 className="mt-8 font-display text-4xl font-semibold text-brown">
           Your request is on its way!
@@ -64,12 +64,14 @@ function getBookingDetails(booking: Awaited<ReturnType<typeof getBookingByRefere
   return { petName: booking.petName, details };
 }
 
-function ConfirmationAvatar() {
+function ConfirmationAvatar({ petType }: { petType?: "dog" | "cat" }) {
+  const isCat = petType === "cat";
+
   return (
     <div className="relative mx-auto h-36 w-36">
       <Image
-        src="/booking-confirmation-dog.png"
-        alt="Happy groomed dog"
+        src={isCat ? "/booking-confirmation-cat.png" : "/booking-confirmation-dog.png"}
+        alt={isCat ? "Happy groomed cat" : "Happy groomed dog"}
         fill
         sizes="144px"
         className="rounded-full border-4 border-white object-cover shadow-lg"
