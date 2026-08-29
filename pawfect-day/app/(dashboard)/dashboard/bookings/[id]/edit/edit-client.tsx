@@ -10,13 +10,15 @@ import type {
 	PetType,
 	ServiceType,
 } from "@/app/types/booking";
+import { User } from "@/app/types/user";
 import { SERVICES_MASTER } from "@/app/types/booking";
 import { updateBookingAction } from "@/app/(dashboard)/dashboard/action";
 import InputField from "@/app/components/ui/InputField";
 import Dropdown from "@/app/components/ui/Dropdown";
 import Button from "@/app/components/ui/Button";
+import Sidebar from "@/app/components/Sidebar";
 
-type Props = { booking: Booking };
+type Props = { booking: Booking, user: User | null };
 
 interface Toast {
 	id: string;
@@ -58,7 +60,7 @@ const TIME_OPTIONS = [
 	"3:00 PM",
 	"4:30 PM",
 ];
-export default function EditClient({ booking }: Props) {
+export default function EditClient({ booking, user }: Props) {
 	const router = useRouter();
 	const [isPending, startTransition] = useTransition();
 
@@ -144,20 +146,7 @@ export default function EditClient({ booking }: Props) {
 			</div>
 
 			{/* Sidebar */}
-			<aside className="flex w-full flex-col border-b border-[#e2d5c7] bg-[#f8f4ed] px-7 py-7 md:min-h-screen md:w-[298px] md:border-b-0 md:border-r md:px-8 md:py-8">
-				<div className="flex items-center gap-2 text-[22px] font-bold text-[#c6532c]">
-					<span className="text-xl">🐾</span>Pawfect Day
-				</div>
-				<div className="mt-10 text-xs font-semibold uppercase tracking-widest text-[#a29488]">
-					Staff Dashboard
-				</div>
-				<Link
-					className="mt-8 rounded-xl bg-[#fff0eb] px-4 py-4 text-sm font-bold text-[#c6532c]"
-					href="/dashboard"
-				>
-					<span className="mr-3">▣</span>Bookings
-				</Link>
-			</aside>
+			<Sidebar user={user}  />
 
 			{/* Main Content Area */}
 			<main className="w-full px-5 py-8 sm:px-8 lg:px-12 lg:py-11">

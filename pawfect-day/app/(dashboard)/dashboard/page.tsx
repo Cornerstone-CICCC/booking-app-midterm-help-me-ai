@@ -7,7 +7,6 @@ export default async function DashboardPage() {
 	const bookings = await getBookings();
   const me = await getCurrentUser();
 
-  console.log("Current User:", me);
 
   return <DashboardClient bookings={bookings} user={me} />;
 }
