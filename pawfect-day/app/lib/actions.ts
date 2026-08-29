@@ -31,36 +31,25 @@ export async function loginAction(
     password: formData.get("password")?.toString().trim() || "",
     rememberMe: formData.get("rememberMe") === "on",
   };
-
   if (!credentials.email || !credentials.password) {
     return { error: "Please enter both email and password." };
   }
-
   try {
     const result = await pool.query<User>(
       "SELECT * FROM users WHERE email = $1",
       [credentials.email],
     );
     const user = result.rows[0];
-
-    console.log("--- DEBUG AUTH ---");
-    console.log("User found:", user?.email);
-    console.log("Password Hash in DB:", user?.password);
-    console.log("Password Provided:", credentials.password);
-
     if (!user || !user.password) {
       return { error: "Invalid email or password." };
     }
-
     const isValidPassword = await bcrypt.compare(
       credentials.password,
       user.password,
     );
-
     if (!isValidPassword) {
       return { error: "Invalid email or password." };
     }
-
     await createSession(
       {
         userId: user.id,

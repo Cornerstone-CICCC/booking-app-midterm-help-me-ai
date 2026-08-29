@@ -10,7 +10,6 @@ export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const sessionToken = request.cookies.get('staff_session')?.value;
 
-  // Protege /dashboard y cualquier subruta (/dashboard/bookings/[id], /dashboard/bookings/[id]/edit)
   const isProtectedRoute = pathname.startsWith('/dashboard');
   const isLoginRoute = pathname === '/login';
 
